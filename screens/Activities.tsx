@@ -6,9 +6,8 @@ export default function Activities() {
     <View style={styles.container}>
       <Text style={styles.title}>Self-Care Activities</Text>
       <ScrollView style={styles.list}>
-        <Text style={styles.activity}>• Morning Meditation</Text>
-        <Text style={styles.activity}>• Healthy Breakfast</Text>
         <Text style={styles.activity}>• Take a Walk</Text>
+        <Text style={styles.activity}>• Stay Hydrated</Text>
         <Text style={styles.activity}>• Journaling</Text>
         <Text style={styles.activity}>• Evening Wind Down</Text>
       </ScrollView>
