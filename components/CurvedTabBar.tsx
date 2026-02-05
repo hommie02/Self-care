@@ -66,7 +66,7 @@ export default function CurvedTabBar({ state, descriptors, navigation }: CurvedT
               onLongPress={onLongPress}
               style={styles.tab}
             >
-              <Ionicons name={iconName as any} size={24} color={isFocused ? '#fff' : '#ccc'} />
+              <Ionicons name={iconName as any} size={24} color={isFocused ? '#000' : '#666'} />
             </TouchableOpacity>
           );
         })}
@@ -81,24 +81,24 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    height: 80,
+    height: 90,
   },
   curve: {
-    height: 60,
+    height: 70,
     backgroundColor: '#FFB6C1',
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
+    borderTopLeftRadius: 35,
+    borderTopRightRadius: 35,
   },
   tabs: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    height: 80,
+    height: 90,
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    paddingBottom: 10,
+    paddingBottom: 20,
   },
   tab: {
     alignItems: 'center',

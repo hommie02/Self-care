@@ -4,15 +4,12 @@ import { Ionicons } from '@expo/vector-icons';
 
 export default function Settings() {
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
-  const [selectedTheme, setSelectedTheme] = useState('pink');
 
   const handleRateApp = () => {
-    // Placeholder for rating - would link to app store
     Alert.alert('Rate App', 'This would open the app store for rating.');
   };
 
   const handleFeedback = () => {
-    // Open email client for feedback
     const email = 'feedback@selfcareapp.com';
     const subject = 'Feedback for Self-Care App';
     const url = `mailto:${email}?subject=${encodeURIComponent(subject)}`;
@@ -37,77 +34,76 @@ export default function Settings() {
     Alert.alert('Notifications', notificationsEnabled ? 'Disabled' : 'Enabled');
   };
 
-  const changeTheme = (theme: string) => {
-    setSelectedTheme(theme);
-    Alert.alert('Theme Changed', `Switched to ${theme} theme`);
+  const handleThemeChange = () => {
+    Alert.alert(
+      'Choose Theme',
+      'Select a theme',
+      [
+        { text: 'Pink Theme', onPress: () => Alert.alert('Theme', 'Switched to Pink Theme') },
+        { text: 'Black Theme', onPress: () => Alert.alert('Theme', 'Switched to Black Theme') },
+        { text: 'Cancel', style: 'cancel' },
+      ]
+    );
   };
+
+  const settingsItems = [
+    {
+      title: 'Push Notifications',
+      type: 'switch',
+      value: notificationsEnabled,
+      onPress: toggleNotifications,
+    },
+    {
+      title: 'Themes',
+      type: 'arrow',
+      onPress: handleThemeChange,
+    },
+    {
+      title: 'App Info',
+      type: 'arrow',
+      onPress: () => Alert.alert('App Info', 'Liz\'s Self-Care is a soft, modern Android app designed to help you maintain your well-being. Features include daily activities, journaling, and personalized self-care tips with a calming pink theme.'),
+    },
+  ];
+
+  const renderItem = (item: any) => (
+    <TouchableOpacity style={styles.settingItem} onPress={item.onPress}>
+      <Text style={styles.settingText}>{item.title}</Text>
+      {item.type === 'switch' ? (
+        <Switch
+          value={item.value}
+          onValueChange={item.onPress}
+          trackColor={{ false: '#ccc', true: '#FFB6C1' }}
+          thumbColor={item.value ? '#FFB6C1' : '#f4f3f4'}
+        />
+      ) : (
+        <Ionicons name="chevron-forward" size={20} color="#000" />
+      )}
+    </TouchableOpacity>
+  );
 
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Settings</Text>
 
-      {/* Notifications */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Notifications</Text>
-        <View style={styles.settingRow}>
-          <Text style={styles.settingText}>Push Notifications</Text>
-          <Switch
-            value={notificationsEnabled}
-            onValueChange={toggleNotifications}
-            trackColor={{ false: '#ccc', true: '#fff' }}
-            thumbColor={notificationsEnabled ? '#FFB6C1' : '#f4f3f4'}
-          />
+      {settingsItems.map((item, index) => (
+        <View key={index}>
+          {renderItem(item)}
         </View>
-      </View>
+      ))}
 
-      {/* Themes */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Themes</Text>
-        <View style={styles.themeButtons}>
-          <TouchableOpacity
-            style={[styles.themeButton, selectedTheme === 'pink' && styles.selectedTheme]}
-            onPress={() => changeTheme('pink')}
-          >
-            <Text style={styles.themeText}>Pink Theme</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.themeButton, selectedTheme === 'black' && styles.selectedTheme]}
-            onPress={() => changeTheme('black')}
-          >
-            <Text style={styles.themeText}>Black Theme</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      {/* App Info */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>App Info</Text>
-        <Text style={styles.infoText}>
-          Liz's Self-Care is a soft, modern Android app designed to help you maintain your well-being.
-          Features include daily activities, journaling, and personalized self-care tips with a calming pink theme.
-        </Text>
-      </View>
-
-      {/* Rate App */}
-      <View style={styles.section}>
+      <View style={styles.buttonSection}>
         <TouchableOpacity style={styles.button} onPress={handleRateApp}>
-          <Ionicons name="star" size={20} color="#FFB6C1" />
+          <Ionicons name="star" size={20} color="#000" />
           <Text style={styles.buttonText}>Rate Our App</Text>
         </TouchableOpacity>
-      </View>
 
-      {/* Feedback */}
-      <View style={styles.section}>
         <TouchableOpacity style={styles.button} onPress={handleFeedback}>
-          <Ionicons name="mail" size={20} color="#FFB6C1" />
+          <Ionicons name="mail" size={20} color="#000" />
           <Text style={styles.buttonText}>Send Feedback</Text>
         </TouchableOpacity>
-      </View>
 
-      {/* Sign Out */}
-      <View style={styles.section}>
         <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
-          <Ionicons name="log-out" size={20} color="#fff" />
+          <Ionicons name="log-out" size={20} color="#000" />
           <Text style={styles.signOutText}>Sign Out</Text>
         </TouchableOpacity>
       </View>
@@ -124,54 +120,25 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#000',
     marginBottom: 20,
     textAlign: 'center',
   },
-  section: {
-    marginBottom: 30,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 15,
-  },
-  settingRow: {
+  settingItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: 'rgba(255,255,255,0.2)',
     padding: 15,
     borderRadius: 10,
+    marginBottom: 10,
   },
   settingText: {
     fontSize: 16,
-    color: '#fff',
+    color: '#000',
   },
-  themeButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  themeButton: {
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    padding: 15,
-    borderRadius: 10,
-    flex: 1,
-    marginHorizontal: 5,
-    alignItems: 'center',
-  },
-  selectedTheme: {
-    backgroundColor: 'rgba(255,255,255,0.5)',
-  },
-  themeText: {
-    color: '#fff',
-    fontSize: 16,
-  },
-  infoText: {
-    color: '#fff',
-    fontSize: 16,
-    lineHeight: 24,
+  buttonSection: {
+    marginTop: 30,
   },
   button: {
     flexDirection: 'row',
@@ -180,9 +147,10 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     justifyContent: 'center',
+    marginBottom: 10,
   },
   buttonText: {
-    color: '#fff',
+    color: '#000',
     fontSize: 16,
     marginLeft: 10,
   },
@@ -195,7 +163,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   signOutText: {
-    color: '#fff',
+    color: '#000',
     fontSize: 16,
     marginLeft: 10,
   },
