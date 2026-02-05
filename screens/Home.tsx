@@ -4,7 +4,7 @@ import { View, Text, StyleSheet } from 'react-native';
 export default function Home() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome to Self-Care</Text>
+      <Text style={styles.title}>LIZ'S SELF CARE</Text>
       <Text style={styles.subtitle}>Take care of yourself every day</Text>
     </View>
   );
