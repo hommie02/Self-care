@@ -23,10 +23,15 @@ export default function Journal() {
   const saveJournal = async (newText: string) => {
     try {
       await AsyncStorage.setItem('dailyJournal', newText);
+      Alert.alert('Saved', 'Your journal entry has been saved.');
     } catch (error) {
       console.error('Error saving journal:', error);
       Alert.alert('Error', 'Failed to save journal entry.');
     }
+  };
+
+  const handleSave = () => {
+    saveJournal(text);
   };
 
   const handleTextChange = (newText: string) => {
@@ -59,9 +64,14 @@ export default function Journal() {
         value={text}
         onChangeText={handleTextChange}
       />
-      <TouchableOpacity style={styles.clearButton} onPress={clearJournal}>
-        <Text style={styles.clearText}>Clear Journal</Text>
-      </TouchableOpacity>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+          <Text style={styles.saveText}>Save Journal</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.clearButton} onPress={clearJournal}>
+          <Text style={styles.clearText}>Clear Journal</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -87,11 +97,30 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
     marginBottom: 20,
   },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  saveButton: {
+    backgroundColor: '#4CAF50',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    flex: 1,
+    marginRight: 10,
+  },
+  saveText: {
+    color: '#000',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
   clearButton: {
     backgroundColor: '#ff6b6b',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
+    flex: 1,
+    marginLeft: 10,
   },
   clearText: {
     color: '#000',

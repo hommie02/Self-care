@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Animated } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Animated, Alert } from 'react-native';
+import * as Notifications from 'expo-notifications';
 
 export default function Activities() {
   const activities = [
@@ -25,6 +26,37 @@ export default function Activities() {
     }).start();
   };
 
+  const handleActivityPress = async (activity: string) => {
+    if (activity === 'Stay Hydrated') {
+      await setHydrationReminder();
+    } else {
+      // For other activities, just show a message
+      Alert.alert('Activity', `Great! You're doing: ${activity}`);
+    }
+  };
+
+  const setHydrationReminder = async () => {
+    const { status } = await Notifications.requestPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission needed', 'Please enable notifications to set reminders.');
+      return;
+    }
+
+    // Schedule notification for 1 hour from now
+    const trigger = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: 'Stay Hydrated! 💧',
+        body: 'Time to drink some water and stay healthy!',
+        sound: 'default',
+      },
+      trigger,
+    });
+
+    Alert.alert('Reminder Set', 'You will be reminded to drink water in 1 hour.');
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Self-Care Activities</Text>
@@ -36,6 +68,7 @@ export default function Activities() {
             activeOpacity={1}
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}
+            onPress={() => handleActivityPress(activity)}
           >
             <Animated.View style={[styles.animatedBox, { transform: [{ scale: scaleAnim }] }]}>
               <Text style={styles.activityText}>{activity}</Text>
