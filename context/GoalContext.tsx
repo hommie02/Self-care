@@ -33,11 +33,10 @@ const GoalContext = createContext<GoalContextType | undefined>(undefined);
 
 const defaultGoals: Goal[] = [
   { id: 'water', title: 'Drink Water', icon: '💧', target: 8, unit: 'glasses', category: 'popular' },
-  { id: 'wakeup', title: 'Wake up Early', icon: '⏰', target: 7, unit: 'days', category: 'popular' },
-  { id: 'savings', title: 'Savings', icon: '💰', target: 100, unit: 'dollars', category: 'new' },
-  { id: 'weight', title: 'Weight', icon: '⚖️', target: 5, unit: 'workouts', category: 'new' },
-  { id: 'exercise', title: 'Exercise', icon: '🏃', target: 30, unit: 'minutes', category: 'popular' },
-  { id: 'study', title: 'Study', icon: '📚', target: 60, unit: 'minutes', category: 'new' },
+  { id: 'study', title: 'Study', icon: '📚', target: 60, unit: 'minutes', category: 'popular' },
+  { id: 'savings', title: 'Savings', icon: '💰', target: 100, unit: 'TSH', category: 'new' },
+  { id: 'weight', title: 'Push-ups', icon: '💪', target: 20, unit: 'push-ups', category: 'new' },
+  { id: 'exercise', title: 'Exercise', icon: '🏃', target: 30, unit: 'minutes', category: 'new' },
 ];
 
 const STORAGE_KEY = '@goal_data';

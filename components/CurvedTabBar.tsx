@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
   },
   curve: {
     height: 70,
-    backgroundColor: '#FFB6C1',
+    backgroundColor: '#B8D8F0',
     borderTopLeftRadius: 35,
     borderTopRightRadius: 35,
   },

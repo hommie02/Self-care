@@ -135,7 +135,7 @@ export default function Settings({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFB6C1',
+    backgroundColor: '#B8D8F0',
     padding: 20,
   },
   title: {

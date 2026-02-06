@@ -43,7 +43,7 @@ export default function GoalDetail({ route, navigation }: any) {
       case 'savings':
         return [5, 10, 20];
       case 'weight':
-        return [1, 1, 1];
+        return [5, 10, 20];
       default:
         return [1, 5, 10];
     }
