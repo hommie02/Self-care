@@ -1,13 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { useGoals } from '../context/GoalContext';
 
 interface ProgressCardProps {
+  goalId: string;
   percentage: number;
   title: string;
-  subtitle?: string;
+  weeklyAverage: number;
 }
 
-const ProgressCard = ({ percentage, title, subtitle }: ProgressCardProps) => {
+const ProgressCard = ({ goalId, percentage, title, weeklyAverage }: ProgressCardProps) => {
   const getColor = () => {
     if (percentage >= 75) return '#E91E63';
     if (percentage >= 50) return '#FF6B9D';
@@ -22,7 +24,7 @@ const ProgressCard = ({ percentage, title, subtitle }: ProgressCardProps) => {
         </View>
         <View style={styles.progressInfo}>
           <Text style={styles.progressTitle}>{title}</Text>
-          {subtitle && <Text style={styles.progressSubtitle}>{subtitle}</Text>}
+          <Text style={styles.progressSubtitle}>Last week: {weeklyAverage}%</Text>
         </View>
       </View>
       <Text style={styles.arrow}>›</Text>
@@ -31,6 +33,12 @@ const ProgressCard = ({ percentage, title, subtitle }: ProgressCardProps) => {
 };
 
 export default function Progress() {
+  const { goals, getProgressPercentage, getWeeklyAverage } = useGoals();
+
+  const trackedGoals = goals.filter(g => 
+    ['water', 'exercise', 'study'].includes(g.id)
+  );
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
@@ -48,9 +56,15 @@ export default function Progress() {
           Weekly <Text style={styles.titleBold}>Progress</Text>
         </Text>
 
-        <ProgressCard percentage={75} title="Drink Water" />
-        <ProgressCard percentage={50} title="Exercise" subtitle="Last week: 60%" />
-        <ProgressCard percentage={82} title="Study" subtitle="Last week: 80%" />
+        {trackedGoals.map(goal => (
+          <ProgressCard
+            key={goal.id}
+            goalId={goal.id}
+            percentage={getProgressPercentage(goal.id)}
+            title={goal.title}
+            weeklyAverage={getWeeklyAverage(goal.id)}
+          />
+        ))}
       </View>
     </ScrollView>
   );

@@ -1,14 +1,17 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { useGoals } from '../context/GoalContext';
 
 interface GoalCardProps {
+  goalId: string;
   icon: string;
   title: string;
   category: 'popular' | 'new';
+  onPress: () => void;
 }
 
-const GoalCard = ({ icon, title, category }: GoalCardProps) => (
-  <TouchableOpacity style={styles.goalCard}>
+const GoalCard = ({ goalId, icon, title, category, onPress }: GoalCardProps) => (
+  <TouchableOpacity style={styles.goalCard} onPress={onPress}>
     <View style={styles.iconContainer}>
       <Text style={styles.icon}>{icon}</Text>
     </View>
@@ -16,7 +19,16 @@ const GoalCard = ({ icon, title, category }: GoalCardProps) => (
   </TouchableOpacity>
 );
 
-export default function Home() {
+export default function Home({ navigation }: any) {
+  const { goals } = useGoals();
+
+  const popularGoals = goals.filter(g => g.category === 'popular');
+  const newGoals = goals.filter(g => g.category === 'new');
+
+  const handleGoalPress = (goalId: string) => {
+    navigation.navigate('GoalDetail', { goalId });
+  };
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
@@ -36,8 +48,16 @@ export default function Home() {
           </TouchableOpacity>
         </View>
         <View style={styles.goalsRow}>
-          <GoalCard icon="💧" title="Drink Water" category="popular" />
-          <GoalCard icon="⏰" title="Wake up Early" category="popular" />
+          {popularGoals.slice(0, 2).map(goal => (
+            <GoalCard
+              key={goal.id}
+              goalId={goal.id}
+              icon={goal.icon}
+              title={goal.title}
+              category={goal.category}
+              onPress={() => handleGoalPress(goal.id)}
+            />
+          ))}
         </View>
       </View>
 
@@ -49,8 +69,16 @@ export default function Home() {
           </TouchableOpacity>
         </View>
         <View style={styles.goalsRow}>
-          <GoalCard icon="💰" title="Savings" category="new" />
-          <GoalCard icon="⚖️" title="Weight" category="new" />
+          {newGoals.slice(0, 2).map(goal => (
+            <GoalCard
+              key={goal.id}
+              goalId={goal.id}
+              icon={goal.icon}
+              title={goal.title}
+              category={goal.category}
+              onPress={() => handleGoalPress(goal.id)}
+            />
+          ))}
         </View>
       </View>
     </ScrollView>
