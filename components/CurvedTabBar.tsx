@@ -42,6 +42,9 @@ export default function CurvedTabBar({ state, descriptors, navigation }: CurvedT
             case 'Home':
               iconName = 'home';
               break;
+            case 'Progress':
+              iconName = 'stats-chart';
+              break;
             case 'Activities':
               iconName = 'heart';
               break;
