@@ -4,7 +4,7 @@
     "slug": "Self-care",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/Smiling heart and wellness symbols.png",
+    "icon": "./assets/app-icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
@@ -17,7 +17,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/Smiling heart and wellness symbols.png",
+        "foregroundImage": "./assets/app-icon.png",
         "backgroundColor": "#B8D8F0"
       },
       "edgeToEdgeEnabled": true,
