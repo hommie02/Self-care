@@ -56,14 +56,6 @@ export default function Journal() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Daily Journal</Text>
-      <TextInput
-        style={styles.input}
-        multiline
-        placeholder="Write about your day..."
-        placeholderTextColor="#666"
-        value={text}
-        onChangeText={handleTextChange}
-      />
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
           <Text style={styles.saveText}>Save Journal</Text>
@@ -72,6 +64,14 @@ export default function Journal() {
           <Text style={styles.clearText}>Clear Journal</Text>
         </TouchableOpacity>
       </View>
+      <TextInput
+        style={styles.input}
+        multiline
+        placeholder="Write about your day..."
+        placeholderTextColor="#666"
+        value={text}
+        onChangeText={handleTextChange}
+      />
     </View>
   );
 }
@@ -95,11 +95,11 @@ const styles = StyleSheet.create({
     padding: 15,
     fontSize: 16,
     textAlignVertical: 'top',
-    marginBottom: 20,
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginBottom: 20,
   },
   saveButton: {
     backgroundColor: '#4CAF50',
