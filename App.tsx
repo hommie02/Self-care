@@ -1,16 +1,35 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { View, Text, StyleSheet } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import Home from './screens/Home';
 
 export default function App() {
   return (
     <SafeAreaProvider>
-      <NavigationContainer>
-        <StatusBar style="light" backgroundColor="#FFB6C1" />
-        <Home />
-      </NavigationContainer>
+      <StatusBar style="light" backgroundColor="#FFB6C1" />
+      <View style={styles.container}>
+        <Text style={styles.text}>Self-Care App</Text>
+        <Text style={styles.subtext}>Switch to sacred-time branch for full features</Text>
+      </View>
     </SafeAreaProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FFB6C1',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  text: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 10,
+  },
+  subtext: {
+    fontSize: 14,
+    color: '#fff',
+  },
+});
