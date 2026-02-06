@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Switch, Alert, Linking, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useAuth } from '../context/AuthContext';
+import { CommonActions } from '@react-navigation/native';
 
-export default function Settings() {
+export default function Settings({ navigation }: any) {
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+  const { user, logout } = useAuth();
 
   const handleRateApp = () => {
     Alert.alert('Rate App', 'This would open the app store for rating.');
@@ -24,7 +27,18 @@ export default function Settings() {
       'Are you sure you want to sign out?',
       [
         { text: 'Cancel', style: 'cancel' },
-        { text: 'Sign Out', onPress: () => Alert.alert('Signed Out', 'You have been signed out.') },
+        { 
+          text: 'Sign Out', 
+          onPress: () => {
+            logout();
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [{ name: 'Welcome' }],
+              })
+            );
+          }
+        },
       ]
     );
   };
@@ -85,6 +99,13 @@ export default function Settings() {
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Settings</Text>
 
+      {user && (
+        <View style={styles.userInfo}>
+          <Text style={styles.userInfoText}>Logged in as: {user.name}</Text>
+          <Text style={styles.userEmail}>{user.email}</Text>
+        </View>
+      )}
+
       {settingsItems.map((item, index) => (
         <View key={index}>
           {renderItem(item)}
@@ -103,7 +124,7 @@ export default function Settings() {
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
-          <Ionicons name="log-out" size={20} color="#000" />
+          <Ionicons name="log-out" size={20} color="#fff" />
           <Text style={styles.signOutText}>Sign Out</Text>
         </TouchableOpacity>
       </View>
@@ -163,8 +184,26 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   signOutText: {
-    color: '#000',
+    color: '#fff',
     fontSize: 16,
+    fontWeight: '600',
     marginLeft: 10,
+  },
+  userInfo: {
+    backgroundColor: 'rgba(255,255,255,0.3)',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+    alignItems: 'center',
+  },
+  userInfoText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#000',
+    marginBottom: 5,
+  },
+  userEmail: {
+    fontSize: 14,
+    color: '#333',
   },
 });

@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useGoals } from '../context/GoalContext';
+import { useAuth } from '../context/AuthContext';
 
 interface GoalCardProps {
   goalId: string;
@@ -21,6 +22,7 @@ const GoalCard = ({ goalId, icon, title, category, onPress }: GoalCardProps) => 
 
 export default function Home({ navigation }: any) {
   const { goals } = useGoals();
+  const { user } = useAuth();
 
   const popularGoals = goals.filter(g => g.category === 'popular');
   const newGoals = goals.filter(g => g.category === 'new');
@@ -29,13 +31,15 @@ export default function Home({ navigation }: any) {
     navigation.navigate('GoalDetail', { goalId });
   };
 
+  const userName = user?.name || 'Liz';
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <View style={styles.illustrationContainer}>
           <Text style={styles.illustration}>📱</Text>
         </View>
-        <Text style={styles.greeting}>Hello, <Text style={styles.name}>Liz</Text></Text>
+        <Text style={styles.greeting}>Hello, <Text style={styles.name}>{userName}</Text></Text>
         <Text style={styles.subtitle}>Start improving your life.</Text>
         <Text style={styles.chooseText}>choose your goals!</Text>
       </View>

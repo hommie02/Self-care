@@ -4,8 +4,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
+import { AuthProvider } from './context/AuthContext';
 import { GoalProvider } from './context/GoalContext';
 import Welcome from './screens/Welcome';
+import SignUp from './screens/SignUp';
+import Login from './screens/Login';
 import Home from './screens/Home';
 import Activities from './screens/Activities';
 import Journal from './screens/Journal';
@@ -46,16 +49,20 @@ function MainApp() {
 
 export default function App() {
   return (
-    <GoalProvider>
-      <SafeAreaProvider>
-        <NavigationContainer>
-          <StatusBar style="dark" backgroundColor="#B8D8F0" />
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="Welcome" component={Welcome} />
-            <Stack.Screen name="MainApp" component={MainApp} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </SafeAreaProvider>
-    </GoalProvider>
+    <AuthProvider>
+      <GoalProvider>
+        <SafeAreaProvider>
+          <NavigationContainer>
+            <StatusBar style="dark" backgroundColor="#B8D8F0" />
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="Welcome" component={Welcome} />
+              <Stack.Screen name="SignUp" component={SignUp} />
+              <Stack.Screen name="Login" component={Login} />
+              <Stack.Screen name="MainApp" component={MainApp} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </SafeAreaProvider>
+      </GoalProvider>
+    </AuthProvider>
   );
 }

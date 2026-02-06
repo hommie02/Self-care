@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 export default function Welcome({ navigation }: any) {
   return (
@@ -13,16 +13,16 @@ export default function Welcome({ navigation }: any) {
 
       <TouchableOpacity 
         style={styles.button}
-        onPress={() => navigation.navigate('MainApp')}
+        onPress={() => navigation.navigate('SignUp')}
       >
-        <Text style={styles.buttonText}>SIGN IN</Text>
+        <Text style={styles.buttonText}>SIGN UP</Text>
       </TouchableOpacity>
 
-      <Text style={styles.linkText}>Do you have an account?</Text>
+      <Text style={styles.linkText}>Already have an account?</Text>
       
       <TouchableOpacity 
         style={[styles.button, styles.secondaryButton]}
-        onPress={() => navigation.navigate('MainApp')}
+        onPress={() => navigation.navigate('Login')}
       >
         <Text style={styles.buttonText}>LOG IN</Text>
       </TouchableOpacity>
