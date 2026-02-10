@@ -1,12 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Switch, Alert, Linking, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../context/AuthContext';
 import { CommonActions } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { 
+  requestNotificationPermissions, 
+  scheduleMorningGreeting, 
+  scheduleGoalReminders, 
+  cancelAllNotifications,
+  sendImmediateNotification 
+} from '../services/notificationService';
+
+const NOTIFICATION_STORAGE_KEY = '@notifications_enabled';
 
 export default function Settings({ navigation }: any) {
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const { user, logout } = useAuth();
+
+  useEffect(() => {
+    loadNotificationSettings();
+  }, []);
+
+  const loadNotificationSettings = async () => {
+    try {
+      const stored = await AsyncStorage.getItem(NOTIFICATION_STORAGE_KEY);
+      if (stored !== null) {
+        setNotificationsEnabled(stored === 'true');
+      }
+    } catch (error) {
+      console.error('Error loading notification settings:', error);
+    }
+  };
 
   const handleRateApp = () => {
     const url = 'https://play.google.com/store/apps/details?id=com.selfcare.app';
@@ -46,9 +71,43 @@ export default function Settings({ navigation }: any) {
     );
   };
 
-  const toggleNotifications = () => {
-    setNotificationsEnabled(!notificationsEnabled);
-    Alert.alert('Notifications', notificationsEnabled ? 'Disabled' : 'Enabled');
+  const toggleNotifications = async () => {
+    if (!notificationsEnabled) {
+      // Turning ON notifications
+      const hasPermission = await requestNotificationPermissions();
+      
+      if (hasPermission) {
+        setNotificationsEnabled(true);
+        await AsyncStorage.setItem(NOTIFICATION_STORAGE_KEY, 'true');
+        
+        // Schedule all notifications
+        await scheduleMorningGreeting(user?.name || 'User');
+        await scheduleGoalReminders();
+        
+        // Send test notification
+        await sendImmediateNotification(
+          '✅ Notifications Enabled!',
+          'You\'ll receive daily reminders to help you reach your goals.'
+        );
+        
+        Alert.alert('Success', 'Notifications enabled! You\'ll receive daily reminders.');
+      } else {
+        Alert.alert(
+          'Permission Denied',
+          'Please enable notifications in your device settings to receive reminders.',
+          [
+            { text: 'Cancel', style: 'cancel' },
+            { text: 'Open Settings', onPress: () => Linking.openSettings() }
+          ]
+        );
+      }
+    } else {
+      // Turning OFF notifications
+      setNotificationsEnabled(false);
+      await AsyncStorage.setItem(NOTIFICATION_STORAGE_KEY, 'false');
+      await cancelAllNotifications();
+      Alert.alert('Notifications Disabled', 'You won\'t receive any more reminders.');
+    }
   };
 
   const settingsItems = [
