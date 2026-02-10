@@ -31,7 +31,7 @@ export default function Home({ navigation }: any) {
     navigation.navigate('GoalDetail', { goalId });
   };
 
-  const userName = user?.name || 'Liz';
+  const userName = user?.name || 'User';
 
   return (
     <ScrollView style={styles.container}>

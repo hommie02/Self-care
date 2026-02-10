@@ -10,6 +10,8 @@ import Welcome from './screens/Welcome';
 import SignUp from './screens/SignUp';
 import Login from './screens/Login';
 import Home from './screens/Home';
+import Activities from './screens/Activities';
+import Journal from './screens/Journal';
 import Settings from './screens/Settings';
 import Progress from './screens/Progress';
 import GoalDetail from './screens/GoalDetail';
@@ -29,6 +31,8 @@ function MainTabs() {
     >
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Progress" component={Progress} />
+      <Tab.Screen name="Activities" component={Activities} />
+      <Tab.Screen name="Journal" component={Journal} />
       <Tab.Screen name="Settings" component={Settings} />
     </Tab.Navigator>
   );

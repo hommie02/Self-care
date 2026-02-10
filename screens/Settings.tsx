@@ -9,7 +9,10 @@ export default function Settings({ navigation }: any) {
   const { user, logout } = useAuth();
 
   const handleRateApp = () => {
-    Alert.alert('Rate App', 'This would open the app store for rating.');
+    const url = 'https://play.google.com/store/apps/details?id=com.selfcare.app';
+    Linking.openURL(url).catch(() => {
+      Alert.alert('Error', 'Unable to open Play Store. Please rate us manually in the Play Store.');
+    });
   };
 
   const handleFeedback = () => {
@@ -48,18 +51,6 @@ export default function Settings({ navigation }: any) {
     Alert.alert('Notifications', notificationsEnabled ? 'Disabled' : 'Enabled');
   };
 
-  const handleThemeChange = () => {
-    Alert.alert(
-      'Choose Theme',
-      'Select a theme',
-      [
-        { text: 'Pink Theme', onPress: () => Alert.alert('Theme', 'Switched to Pink Theme') },
-        { text: 'Black Theme', onPress: () => Alert.alert('Theme', 'Switched to Black Theme') },
-        { text: 'Cancel', style: 'cancel' },
-      ]
-    );
-  };
-
   const settingsItems = [
     {
       title: 'Push Notifications',
@@ -68,14 +59,9 @@ export default function Settings({ navigation }: any) {
       onPress: toggleNotifications,
     },
     {
-      title: 'Themes',
-      type: 'arrow',
-      onPress: handleThemeChange,
-    },
-    {
       title: 'App Info',
       type: 'arrow',
-      onPress: () => Alert.alert('App Info', 'Liz\'s Self-Care is a soft, modern Android app designed to help you maintain your well-being. Features include daily activities, journaling, and personalized self-care tips with a calming pink theme.'),
+      onPress: () => Alert.alert('App Info', 'Self-Care is a modern Android app designed to help you maintain your well-being. Features include daily activities, journaling, and personalized self-care tips. Developed by Ibrahim Mwegero.'),
     },
   ];
 
@@ -135,7 +121,7 @@ export default function Settings({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#B8D8F0',
+    backgroundColor: '#FFB6C1',
     padding: 20,
   },
   title: {
