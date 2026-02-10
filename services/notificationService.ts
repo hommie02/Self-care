@@ -167,6 +167,36 @@ export const scheduleGoalReminders = async () => {
   }
 };
 
+export const scheduleWeeklySummary = async () => {
+  try {
+    // Cancel existing weekly summary
+    const existingNotifications = await Notifications.getAllScheduledNotificationsAsync();
+    for (const notification of existingNotifications) {
+      if (notification.content.data?.type === 'weekly-summary') {
+        await Notifications.cancelScheduledNotificationAsync(notification.identifier);
+      }
+    }
+
+    // Weekly summary - Every Sunday at 8 PM
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: '📊 Weekly Summary',
+        body: 'Check out your progress this week! See how you did and plan for next week.',
+        data: { type: 'weekly-summary' },
+      },
+      trigger: {
+        weekday: 1, // Sunday (1 = Sunday, 2 = Monday, etc.)
+        hour: 20,
+        minute: 0,
+        repeats: true,
+      },
+    });
+
+  } catch (error) {
+    console.error('Error scheduling weekly summary:', error);
+  }
+};
+
 export const cancelAllNotifications = async () => {
   try {
     await Notifications.cancelAllScheduledNotificationsAsync();

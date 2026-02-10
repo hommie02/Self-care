@@ -8,6 +8,7 @@ import {
   requestNotificationPermissions, 
   scheduleMorningGreeting, 
   scheduleGoalReminders, 
+  scheduleWeeklySummary,
   cancelAllNotifications,
   sendImmediateNotification 
 } from '../services/notificationService';
@@ -83,14 +84,15 @@ export default function Settings({ navigation }: any) {
         // Schedule all notifications
         await scheduleMorningGreeting(user?.name || 'User');
         await scheduleGoalReminders();
+        await scheduleWeeklySummary();
         
         // Send test notification
         await sendImmediateNotification(
           '✅ Notifications Enabled!',
-          'You\'ll receive daily reminders to help you reach your goals.'
+          'You\'ll receive daily reminders and weekly summaries to help you reach your goals.'
         );
         
-        Alert.alert('Success', 'Notifications enabled! You\'ll receive daily reminders.');
+        Alert.alert('Success', 'Notifications enabled! You\'ll receive daily reminders and weekly summaries.');
       } else {
         Alert.alert(
           'Permission Denied',
