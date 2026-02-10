@@ -35,15 +35,19 @@ export default function GoalDetail({ route, navigation }: any) {
   const getQuickIncrements = () => {
     switch (goalId) {
       case 'water':
-        return [1, 2, 3];
+        return [0.5, 1, 1.5];
+      case 'sleep':
+        return [1, 2, 4];
+      case 'steps':
+        return [1000, 2500, 5000];
       case 'exercise':
         return [10, 15, 30];
+      case 'running':
+        return [10, 20, 30];
       case 'study':
         return [15, 30, 60];
       case 'savings':
-        return [5, 10, 20];
-      case 'weight':
-        return [5, 10, 20];
+        return [10, 20, 50];
       default:
         return [1, 5, 10];
     }

@@ -162,6 +162,34 @@ export const scheduleGoalReminders = async () => {
       },
     });
 
+    // Bedtime reminder - 10 PM
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: '😴 Time for Bed',
+        body: 'Good sleep is essential for your health. Consider winding down now.',
+        data: { type: 'goal-reminder', goal: 'sleep' },
+      },
+      trigger: {
+        hour: 22,
+        minute: 0,
+        repeats: true,
+      },
+    });
+
+    // Wake up reminder - 7 AM
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: '⏰ Good Morning!',
+        body: 'Time to wake up and start your day fresh!',
+        data: { type: 'goal-reminder', goal: 'wakeup' },
+      },
+      trigger: {
+        hour: 7,
+        minute: 0,
+        repeats: true,
+      },
+    });
+
   } catch (error) {
     console.error('Error scheduling goal reminders:', error);
   }
