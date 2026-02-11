@@ -47,7 +47,7 @@ export default function GoalDetail({ route, navigation }: any) {
       case 'study':
         return [15, 30, 60];
       case 'savings':
-        return [10, 20, 50];
+        return [500, 1000, 2000];
       default:
         return [1, 5, 10];
     }

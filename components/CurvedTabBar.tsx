@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    height: 90,
+    height: 100,
   },
   curve: {
     height: 70,
@@ -96,12 +96,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    height: 90,
+    height: 100,
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    paddingBottom: 20,
+    paddingBottom: 30,
   },
   tab: {
     alignItems: 'center',

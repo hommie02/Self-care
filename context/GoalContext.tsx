@@ -34,7 +34,7 @@ const GoalContext = createContext<GoalContextType | undefined>(undefined);
 const defaultGoals: Goal[] = [
   { id: 'water', title: 'Drink Water', icon: '💧', target: 3, unit: 'liters', category: 'popular' },
   { id: 'study', title: 'Study', icon: '📚', target: 60, unit: 'minutes', category: 'popular' },
-  { id: 'savings', title: 'Savings', icon: '💰', target: 100, unit: 'TSH', category: 'new' },
+  { id: 'savings', title: 'Savings', icon: '💰', target: 5000, unit: 'TSH', category: 'new' },
   { id: 'running', title: 'Running', icon: '🏃', target: 30, unit: 'minutes', category: 'new' },
   { id: 'exercise', title: 'Exercise', icon: '💪', target: 30, unit: 'minutes', category: 'new' },
 ];
