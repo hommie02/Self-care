@@ -80,8 +80,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = async () => {
-    setUser(null);
-    setIsAuthenticated(false);
+    try {
+      await AsyncStorage.removeItem(AUTH_STORAGE_KEY);
+      setUser(null);
+      setIsAuthenticated(false);
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
   };
 
   return (

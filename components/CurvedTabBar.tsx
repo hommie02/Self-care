@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface CurvedTabBarProps {
   state: any;
@@ -9,8 +10,10 @@ interface CurvedTabBarProps {
 }
 
 export default function CurvedTabBar({ state, descriptors, navigation }: CurvedTabBarProps) {
+  const insets = useSafeAreaInsets();
+  
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { height: 100 + insets.bottom, paddingBottom: insets.bottom }]}>
       <View style={styles.curve} />
       <View style={styles.tabs}>
         {state.routes.map((route: any, index: number) => {
@@ -44,12 +47,6 @@ export default function CurvedTabBar({ state, descriptors, navigation }: CurvedT
               break;
             case 'Progress':
               iconName = 'stats-chart';
-              break;
-            case 'Activities':
-              iconName = 'heart';
-              break;
-            case 'Journal':
-              iconName = 'book';
               break;
             case 'Settings':
               iconName = 'settings';
@@ -88,7 +85,7 @@ const styles = StyleSheet.create({
   },
   curve: {
     height: 70,
-    backgroundColor: '#FFB6C1',
+    backgroundColor: '#B8D8F0',
     borderTopLeftRadius: 35,
     borderTopRightRadius: 35,
   },
@@ -101,7 +98,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    paddingBottom: 30,
+    paddingBottom: 20,
   },
   tab: {
     alignItems: 'center',

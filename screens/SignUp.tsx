@@ -58,7 +58,7 @@ export default function SignUp({ navigation }: any) {
           <TextInput
             style={styles.input}
             placeholder="Full Name"
-            placeholderTextColor="#999"
+            placeholderTextColor="#555"
             value={name}
             onChangeText={setName}
             autoCapitalize="words"
@@ -67,7 +67,7 @@ export default function SignUp({ navigation }: any) {
           <TextInput
             style={styles.input}
             placeholder="Email"
-            placeholderTextColor="#999"
+            placeholderTextColor="#555"
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
@@ -77,7 +77,7 @@ export default function SignUp({ navigation }: any) {
           <TextInput
             style={styles.input}
             placeholder="Password"
-            placeholderTextColor="#999"
+            placeholderTextColor="#555"
             value={password}
             onChangeText={setPassword}
             secureTextEntry
@@ -86,7 +86,7 @@ export default function SignUp({ navigation }: any) {
           <TextInput
             style={styles.input}
             placeholder="Confirm Password"
-            placeholderTextColor="#999"
+            placeholderTextColor="#555"
             value={confirmPassword}
             onChangeText={setConfirmPassword}
             secureTextEntry

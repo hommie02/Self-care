@@ -21,7 +21,23 @@ export default function Settings({ navigation }: any) {
 
   useEffect(() => {
     loadNotificationSettings();
+    // Auto-schedule notifications if enabled
+    checkAndScheduleNotifications();
   }, []);
+
+  const checkAndScheduleNotifications = async () => {
+    try {
+      const stored = await AsyncStorage.getItem(NOTIFICATION_STORAGE_KEY);
+      if (stored === 'true') {
+        // Re-schedule notifications on app start if they were enabled
+        await scheduleMorningGreeting(user?.name || 'User');
+        await scheduleGoalReminders();
+        await scheduleWeeklySummary();
+      }
+    } catch (error) {
+      console.error('Error checking notifications:', error);
+    }
+  };
 
   const loadNotificationSettings = async () => {
     try {
@@ -78,21 +94,22 @@ export default function Settings({ navigation }: any) {
       const hasPermission = await requestNotificationPermissions();
       
       if (hasPermission) {
-        setNotificationsEnabled(true);
-        await AsyncStorage.setItem(NOTIFICATION_STORAGE_KEY, 'true');
-        
-        // Schedule all notifications
+        // Schedule all notifications first
         await scheduleMorningGreeting(user?.name || 'User');
         await scheduleGoalReminders();
         await scheduleWeeklySummary();
         
+        // Then update state and storage
+        setNotificationsEnabled(true);
+        await AsyncStorage.setItem(NOTIFICATION_STORAGE_KEY, 'true');
+        
         // Send test notification
         await sendImmediateNotification(
           '✅ Notifications Enabled!',
-          'You\'ll receive daily reminders and weekly summaries to help you reach your goals.'
+          'You\'ll receive daily reminders like water, sleep, and study reminders to help you reach your goals.'
         );
         
-        Alert.alert('Success', 'Notifications enabled! You\'ll receive daily reminders and weekly summaries.');
+        Alert.alert('Success', 'Notifications enabled! You\'ll receive daily reminders for water, sleep, study, and more.');
       } else {
         Alert.alert(
           'Permission Denied',
