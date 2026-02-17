@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal } from 'react-native';
 import { useGoals } from '../context/GoalContext';
 import { useAuth } from '../context/AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const MOOD_STORAGE_KEY = '@daily_mood';
 
 const motivationalQuotes = [
   "Every day is a new beginning. Take a deep breath and start again.",
@@ -214,12 +217,88 @@ export default function Home({ navigation }: any) {
   const [dailyQuote, setDailyQuote] = useState('');
   const [showCelebration, setShowCelebration] = useState(false);
   const [celebrationGoal, setCelebrationGoal] = useState<any>(null);
+  const [showMoodPicker, setShowMoodPicker] = useState(false);
+  const [selectedMood, setSelectedMood] = useState<string | null>(null);
+  const [moodMessage, setMoodMessage] = useState('');
+  const [todayMood, setTodayMood] = useState<string | null>(null);
 
   useEffect(() => {
     // Set daily quote based on date
     const today = new Date().getDate();
     setDailyQuote(motivationalQuotes[today % motivationalQuotes.length]);
+    loadTodayMood();
   }, []);
+
+  const loadTodayMood = async () => {
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      const stored = await AsyncStorage.getItem(MOOD_STORAGE_KEY);
+      if (stored) {
+        const moodData = JSON.parse(stored);
+        if (moodData.date === today) {
+          setTodayMood(moodData.mood);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading mood:', error);
+    }
+  };
+
+  const saveMood = async (mood: string) => {
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      await AsyncStorage.setItem(MOOD_STORAGE_KEY, JSON.stringify({ date: today, mood }));
+      setTodayMood(mood);
+    } catch (error) {
+      console.error('Error saving mood:', error);
+    }
+  };
+
+  const getMoodResponse = (mood: string) => {
+    const responses: { [key: string]: { message: string; suggestion: string } } = {
+      '😊': {
+        message: "That's wonderful! Your positive energy is contagious!",
+        suggestion: "Keep this momentum going! Maybe share your happiness with someone today."
+      },
+      '😄': {
+        message: "Amazing! You're radiating joy today!",
+        suggestion: "This is a great day to tackle your goals. You've got the energy!"
+      },
+      '😐': {
+        message: "It's okay to have neutral days. Every day doesn't have to be perfect.",
+        suggestion: "Try doing something small that usually makes you smile. Maybe a short walk or your favorite music?"
+      },
+      '😔': {
+        message: "I'm sorry you're feeling down. Remember, this feeling is temporary.",
+        suggestion: "Be gentle with yourself today. Maybe try some light exercise or talk to someone you trust. You're not alone."
+      },
+      '😢': {
+        message: "It's okay to not be okay. Your feelings are valid.",
+        suggestion: "Take it easy today. Do something comforting - watch something you love, rest, or reach out to a friend. Tomorrow is a new day."
+      },
+      '😴': {
+        message: "Feeling tired? Rest is just as important as being productive.",
+        suggestion: "Listen to your body. Maybe take a short nap, go to bed early tonight, or just take things slower today."
+      },
+      '😤': {
+        message: "Feeling frustrated is normal. Take a deep breath.",
+        suggestion: "Channel that energy into something productive. Exercise can help release tension. Or take a break and come back refreshed."
+      },
+    };
+    return responses[mood] || responses['😐'];
+  };
+
+  const handleMoodSelect = (mood: string) => {
+    setSelectedMood(mood);
+    const response = getMoodResponse(mood);
+    setMoodMessage(`${response.message}\n\n💡 ${response.suggestion}`);
+    saveMood(mood);
+    setTimeout(() => {
+      setShowMoodPicker(false);
+      setSelectedMood(null);
+      setMoodMessage('');
+    }, 5000);
+  };
 
   const popularGoals = goals.filter(g => g.category === 'popular');
   const newGoals = goals.filter(g => g.category === 'new');
@@ -261,6 +340,22 @@ export default function Home({ navigation }: any) {
         <Text style={styles.subtitle}>Start improving your life.</Text>
         <Text style={styles.chooseText}>choose your goals!</Text>
       </View>
+
+      {/* Mood Checker */}
+      <TouchableOpacity 
+        style={styles.moodCard} 
+        onPress={() => setShowMoodPicker(true)}
+      >
+        <Text style={styles.moodIcon}>
+          {todayMood || '😊'}
+        </Text>
+        <View style={styles.moodTextContainer}>
+          <Text style={styles.moodTitle}>How are you feeling?</Text>
+          <Text style={styles.moodSubtitle}>
+            {todayMood ? 'Tap to change your mood' : 'Tap to share your mood'}
+          </Text>
+        </View>
+      </TouchableOpacity>
 
       {/* Motivational Quote */}
       <View style={styles.quoteCard}>
@@ -333,6 +428,57 @@ export default function Home({ navigation }: any) {
           ))}
         </View>
       </View>
+
+      {/* Mood Picker Modal */}
+      <Modal
+        visible={showMoodPicker}
+        transparent
+        animationType="fade"
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.moodPickerCard}>
+            {selectedMood ? (
+              <>
+                <Text style={styles.selectedMoodEmoji}>{selectedMood}</Text>
+                <Text style={styles.moodResponseText}>{moodMessage}</Text>
+              </>
+            ) : (
+              <>
+                <Text style={styles.moodPickerTitle}>How are you feeling today?</Text>
+                <View style={styles.moodOptions}>
+                  <TouchableOpacity onPress={() => handleMoodSelect('😊')}>
+                    <Text style={styles.moodOption}>😊</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => handleMoodSelect('😄')}>
+                    <Text style={styles.moodOption}>😄</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => handleMoodSelect('😐')}>
+                    <Text style={styles.moodOption}>😐</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => handleMoodSelect('😔')}>
+                    <Text style={styles.moodOption}>😔</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => handleMoodSelect('😢')}>
+                    <Text style={styles.moodOption}>😢</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => handleMoodSelect('😴')}>
+                    <Text style={styles.moodOption}>😴</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => handleMoodSelect('😤')}>
+                    <Text style={styles.moodOption}>😤</Text>
+                  </TouchableOpacity>
+                </View>
+                <TouchableOpacity 
+                  style={styles.cancelButton}
+                  onPress={() => setShowMoodPicker(false)}
+                >
+                  <Text style={styles.cancelButtonText}>Cancel</Text>
+                </TouchableOpacity>
+              </>
+            )}
+          </View>
+        </View>
+      </Modal>
 
       {/* Celebration Modal */}
       <Modal
@@ -564,5 +710,87 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#999',
     textAlign: 'center',
+  },
+  moodCard: {
+    backgroundColor: '#E8F5E9',
+    borderRadius: 20,
+    padding: 20,
+    marginHorizontal: 20,
+    marginTop: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  moodIcon: {
+    fontSize: 50,
+    marginRight: 15,
+  },
+  moodTextContainer: {
+    flex: 1,
+  },
+  moodTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 5,
+  },
+  moodSubtitle: {
+    fontSize: 13,
+    color: '#666',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  moodPickerCard: {
+    backgroundColor: '#fff',
+    borderRadius: 30,
+    padding: 30,
+    alignItems: 'center',
+    width: '85%',
+  },
+  moodPickerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 25,
+    textAlign: 'center',
+  },
+  moodOptions: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: 15,
+    marginBottom: 20,
+  },
+  moodOption: {
+    fontSize: 50,
+    padding: 10,
+  },
+  selectedMoodEmoji: {
+    fontSize: 80,
+    marginBottom: 20,
+  },
+  moodResponseText: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    lineHeight: 24,
+    paddingHorizontal: 10,
+  },
+  cancelButton: {
+    marginTop: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+  },
+  cancelButtonText: {
+    fontSize: 16,
+    color: '#999',
   },
 });
