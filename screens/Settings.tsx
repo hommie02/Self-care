@@ -144,6 +144,13 @@ export default function Settings({ navigation }: any) {
       onPress: toggleNotifications,
     },
     {
+      title: 'View Tutorial',
+      type: 'arrow',
+      onPress: () => {
+        navigation.navigate('Onboarding');
+      },
+    },
+    {
       title: 'Test Notification (10 sec)',
       type: 'arrow',
       onPress: async () => {
@@ -242,7 +249,7 @@ export default function Settings({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFB6C1',
+    backgroundColor: '#B8D8F0',
     padding: 20,
   },
   title: {

@@ -45,6 +45,7 @@ function MainApp() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="MainTabs" component={MainTabs} />
       <Stack.Screen name="GoalDetail" component={GoalDetail} />
+      <Stack.Screen name="Onboarding" component={Onboarding} />
     </Stack.Navigator>
   );
 }
@@ -56,13 +57,17 @@ function AppNavigator() {
 
   useEffect(() => {
     checkOnboarding();
-  }, []);
+  }, [isAuthenticated]);
 
   const checkOnboarding = async () => {
     try {
-      const onboardingComplete = await AsyncStorage.getItem(ONBOARDING_KEY);
-      if (!onboardingComplete && isAuthenticated) {
-        setShowOnboarding(true);
+      if (isAuthenticated) {
+        const onboardingComplete = await AsyncStorage.getItem(ONBOARDING_KEY);
+        if (!onboardingComplete) {
+          setShowOnboarding(true);
+        } else {
+          setShowOnboarding(false);
+        }
       }
       setTimeout(() => setIsLoading(false), 500);
     } catch (error) {
