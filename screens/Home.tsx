@@ -212,7 +212,7 @@ const GoalCard = ({ goalId, icon, title, category, onPress, onQuickAdd }: GoalCa
 };
 
 export default function Home({ navigation }: any) {
-  const { goals, incrementProgress, getProgressPercentage, undoLastAction, lastAction, getBadges } = useGoals();
+  const { goals, incrementProgress, getProgressPercentage, getBadges } = useGoals();
   const { user } = useAuth();
   const [dailyQuote, setDailyQuote] = useState('');
   const [showCelebration, setShowCelebration] = useState(false);
@@ -375,14 +375,6 @@ export default function Home({ navigation }: any) {
             ))}
           </ScrollView>
         </View>
-      )}
-
-      {/* Undo Button */}
-      {lastAction && (
-        <TouchableOpacity style={styles.undoButton} onPress={handleUndo}>
-          <Text style={styles.undoIcon}>↶</Text>
-          <Text style={styles.undoText}>Undo last action</Text>
-        </TouchableOpacity>
       )}
 
       <View style={styles.section}>
@@ -651,31 +643,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '600',
     color: '#333',
-  },
-  undoButton: {
-    backgroundColor: '#FF9800',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    marginHorizontal: 20,
-    marginBottom: 10,
-    borderRadius: 15,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  undoIcon: {
-    fontSize: 20,
-    color: '#fff',
-    marginRight: 8,
-  },
-  undoText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#fff',
   },
   celebrationOverlay: {
     flex: 1,
