@@ -10,10 +10,7 @@ import {
   scheduleGoalReminders, 
   scheduleWeeklySummary,
   cancelAllNotifications,
-  sendImmediateNotification,
-  scheduleTestNotification,
-  scheduleNextHourNotification,
-  getAllScheduledNotifications
+  sendImmediateNotification
 } from '../services/notificationService';
 
 const NOTIFICATION_STORAGE_KEY = '@notifications_enabled';
@@ -148,42 +145,6 @@ export default function Settings({ navigation }: any) {
       type: 'arrow',
       onPress: () => {
         navigation.navigate('Onboarding');
-      },
-    },
-    {
-      title: 'Test Notification (10 sec)',
-      type: 'arrow',
-      onPress: async () => {
-        const success = await scheduleTestNotification();
-        if (success) {
-          Alert.alert('Test Scheduled', 'You should receive a test notification in 10 seconds!');
-        } else {
-          Alert.alert('Error', 'Failed to schedule test notification');
-        }
-      },
-    },
-    {
-      title: 'Test Reminder (1 min)',
-      type: 'arrow',
-      onPress: async () => {
-        const success = await scheduleNextHourNotification();
-        if (success) {
-          Alert.alert('Test Scheduled', 'You should receive a test reminder in 1 minute!');
-        } else {
-          Alert.alert('Error', 'Failed to schedule test reminder');
-        }
-      },
-    },
-    {
-      title: 'View Scheduled Notifications',
-      type: 'arrow',
-      onPress: async () => {
-        const notifications = await getAllScheduledNotifications();
-        if (notifications.length === 0) {
-          Alert.alert('No Notifications', 'No notifications are currently scheduled. Enable notifications first.');
-        } else {
-          Alert.alert('Scheduled Notifications', `You have ${notifications.length} notifications scheduled.`);
-        }
       },
     },
     {

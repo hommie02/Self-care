@@ -233,47 +233,6 @@ export const cancelAllNotifications = async () => {
   }
 };
 
-export const scheduleTestNotification = async () => {
-  try {
-    // Schedule a test notification 10 seconds from now
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: '🧪 Test Notification',
-        body: 'If you see this, notifications are working!',
-        data: { type: 'test' },
-      },
-      trigger: {
-        seconds: 10,
-      },
-    });
-    return true;
-  } catch (error) {
-    console.error('Error scheduling test notification:', error);
-    return false;
-  }
-};
-
-export const scheduleNextHourNotification = async () => {
-  try {
-    // Schedule a notification 1 minute from now for immediate testing
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: '💧 Reminder Test',
-        body: 'This is a test reminder. Your scheduled notifications are working!',
-        data: { type: 'test-reminder' },
-      },
-      trigger: {
-        seconds: 60,
-      },
-    });
-    return true;
-  } catch (error) {
-    console.error('Error scheduling next hour notification:', error);
-    return false;
-  }
-};
-
-
 export const sendImmediateNotification = async (title: string, body: string) => {
   try {
     await Notifications.scheduleNotificationAsync({
