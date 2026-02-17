@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
   },
   tabs: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
     height: 100,
     position: 'absolute',
@@ -99,10 +99,12 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     paddingBottom: 20,
+    paddingHorizontal: 40,
   },
   tab: {
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 10,
+    padding: 15,
+    minWidth: 60,
   },
 });
