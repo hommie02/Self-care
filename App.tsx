@@ -16,6 +16,7 @@ import Onboarding from './screens/Onboarding';
 import Home from './screens/Home';
 import Settings from './screens/Settings';
 import Progress from './screens/Progress';
+import MoodChecker from './screens/MoodChecker';
 import GoalDetail from './screens/GoalDetail';
 import CurvedTabBar from './components/CurvedTabBar';
 
@@ -35,6 +36,7 @@ function MainTabs() {
     >
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Progress" component={Progress} />
+      <Tab.Screen name="MoodChecker" component={MoodChecker} />
       <Tab.Screen name="Settings" component={Settings} />
     </Tab.Navigator>
   );
