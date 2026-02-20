@@ -31,10 +31,10 @@ export default function Home({ navigation }: any) {
     navigation.navigate('GoalDetail', { goalId });
   };
 
-  const userName = user?.name || 'User';
+  const userName = user?.name || 'Liz';
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
       <View style={styles.header}>
         <View style={styles.illustrationContainer}>
           <Text style={styles.illustration}>📱</Text>
@@ -93,6 +93,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5F5F5',
+  },
+  scrollContent: {
+    paddingBottom: 100,
   },
   header: {
     backgroundColor: '#B8D8F0',
