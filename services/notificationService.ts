@@ -246,3 +246,13 @@ export const sendImmediateNotification = async (title: string, body: string) => 
     console.error('Error sending immediate notification:', error);
   }
 };
+
+export const getAllScheduledNotifications = async () => {
+  try {
+    const notifications = await Notifications.getAllScheduledNotificationsAsync();
+    return notifications;
+  } catch (error) {
+    console.error('Error getting scheduled notifications:', error);
+    return [];
+  }
+};

@@ -1,15 +1,60 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Switch, Alert, Linking, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../context/AuthContext';
 import { CommonActions } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { 
+  requestNotificationPermissions, 
+  scheduleMorningGreeting, 
+  scheduleGoalReminders, 
+  scheduleWeeklySummary,
+  cancelAllNotifications,
+  sendImmediateNotification
+} from '../services/notificationService';
+
+const NOTIFICATION_STORAGE_KEY = '@notifications_enabled';
 
 export default function Settings({ navigation }: any) {
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const { user, logout } = useAuth();
 
+  useEffect(() => {
+    loadNotificationSettings();
+    // Auto-schedule notifications if enabled
+    checkAndScheduleNotifications();
+  }, []);
+
+  const checkAndScheduleNotifications = async () => {
+    try {
+      const stored = await AsyncStorage.getItem(NOTIFICATION_STORAGE_KEY);
+      if (stored === 'true') {
+        // Re-schedule notifications on app start if they were enabled
+        await scheduleMorningGreeting(user?.name || 'User');
+        await scheduleGoalReminders();
+        await scheduleWeeklySummary();
+      }
+    } catch (error) {
+      console.error('Error checking notifications:', error);
+    }
+  };
+
+  const loadNotificationSettings = async () => {
+    try {
+      const stored = await AsyncStorage.getItem(NOTIFICATION_STORAGE_KEY);
+      if (stored !== null) {
+        setNotificationsEnabled(stored === 'true');
+      }
+    } catch (error) {
+      console.error('Error loading notification settings:', error);
+    }
+  };
+
   const handleRateApp = () => {
-    Alert.alert('Rate App', 'This would open the app store for rating.');
+    const url = 'https://play.google.com/store/apps/details?id=com.selfcare.app';
+    Linking.openURL(url).catch(() => {
+      Alert.alert('Error', 'Unable to open Play Store. Please rate us manually in the Play Store.');
+    });
   };
 
   const handleFeedback = () => {
@@ -43,21 +88,49 @@ export default function Settings({ navigation }: any) {
     );
   };
 
-  const toggleNotifications = () => {
-    setNotificationsEnabled(!notificationsEnabled);
-    Alert.alert('Notifications', notificationsEnabled ? 'Disabled' : 'Enabled');
-  };
-
-  const handleThemeChange = () => {
-    Alert.alert(
-      'Choose Theme',
-      'Select a theme',
-      [
-        { text: 'Pink Theme', onPress: () => Alert.alert('Theme', 'Switched to Pink Theme') },
-        { text: 'Black Theme', onPress: () => Alert.alert('Theme', 'Switched to Black Theme') },
-        { text: 'Cancel', style: 'cancel' },
-      ]
-    );
+  const toggleNotifications = async () => {
+    if (!notificationsEnabled) {
+      // Turning ON notifications
+      const hasPermission = await requestNotificationPermissions();
+      
+      if (hasPermission) {
+        // Schedule all notifications first
+        await scheduleMorningGreeting(user?.name || 'User');
+        await scheduleGoalReminders();
+        await scheduleWeeklySummary();
+        
+        // Then update state and storage
+        setNotificationsEnabled(true);
+        await AsyncStorage.setItem(NOTIFICATION_STORAGE_KEY, 'true');
+        
+        // Send test notification
+        await sendImmediateNotification(
+          '✅ Notifications Enabled!',
+          'You\'ll receive daily reminders like water, sleep, and study reminders to help you reach your goals.'
+        );
+        
+        Alert.alert(
+          'Success', 
+          'Notifications enabled! You\'ll receive daily reminders.\n\nIMPORTANT: If notifications don\'t work, go to your phone Settings > Apps > Self-care > Battery and disable battery optimization.',
+          [{ text: 'OK' }]
+        );
+      } else {
+        Alert.alert(
+          'Permission Denied',
+          'Please enable notifications in your device settings to receive reminders.',
+          [
+            { text: 'Cancel', style: 'cancel' },
+            { text: 'Open Settings', onPress: () => Linking.openSettings() }
+          ]
+        );
+      }
+    } else {
+      // Turning OFF notifications
+      setNotificationsEnabled(false);
+      await AsyncStorage.setItem(NOTIFICATION_STORAGE_KEY, 'false');
+      await cancelAllNotifications();
+      Alert.alert('Notifications Disabled', 'You won\'t receive any more reminders.');
+    }
   };
 
   const settingsItems = [
@@ -68,14 +141,16 @@ export default function Settings({ navigation }: any) {
       onPress: toggleNotifications,
     },
     {
-      title: 'Themes',
+      title: 'View Tutorial',
       type: 'arrow',
-      onPress: handleThemeChange,
+      onPress: () => {
+        navigation.navigate('Onboarding');
+      },
     },
     {
       title: 'App Info',
       type: 'arrow',
-      onPress: () => Alert.alert('App Info', 'Liz\'s Self-Care is a soft, modern Android app designed to help you maintain your well-being. Features include daily activities, journaling, and personalized self-care tips with a calming pink theme.'),
+      onPress: () => Alert.alert('App Info', 'Self-Care is a modern Android app designed to help you maintain your well-being. Features include daily activities, journaling, and personalized self-care tips. Developed by Ibrahim Mwegero.'),
     },
   ];
 
@@ -135,7 +210,7 @@ export default function Settings({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFB6C1',
+    backgroundColor: '#B8D8F0',
     padding: 20,
   },
   scrollContent: {

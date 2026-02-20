@@ -44,7 +44,7 @@ export default function Login({ navigation }: any) {
           <TextInput
             style={styles.input}
             placeholder="Email"
-            placeholderTextColor="#999"
+            placeholderTextColor="#555"
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
@@ -54,7 +54,7 @@ export default function Login({ navigation }: any) {
           <TextInput
             style={styles.input}
             placeholder="Password"
-            placeholderTextColor="#999"
+            placeholderTextColor="#555"
             value={password}
             onChangeText={setPassword}
             secureTextEntry
@@ -62,6 +62,10 @@ export default function Login({ navigation }: any) {
 
           <TouchableOpacity style={styles.button} onPress={handleLogin}>
             <Text style={styles.buttonText}>LOG IN</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')} style={styles.forgotButton}>
+            <Text style={styles.forgotText}>Forgot Password?</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
@@ -158,5 +162,14 @@ const styles = StyleSheet.create({
   linkBold: {
     fontWeight: '600',
     color: '#333',
+  },
+  forgotButton: {
+    marginBottom: 15,
+  },
+  forgotText: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
+    textDecorationLine: 'underline',
   },
 });

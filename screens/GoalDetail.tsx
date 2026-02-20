@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, Modal } from 'react-native';
 import { useGoals } from '../context/GoalContext';
 
 export default function GoalDetail({ route, navigation }: any) {
   const { goalId } = route.params;
-  const { goals, todayProgress, incrementProgress, updateProgress, getProgressPercentage } = useGoals();
+  const { goals, todayProgress, incrementProgress, updateProgress, getProgressPercentage, undoLastAction, lastAction, getStreak } = useGoals();
   
   const goal = goals.find(g => g.id === goalId);
   const [inputValue, setInputValue] = useState('');
+  const [showCelebration, setShowCelebration] = useState(false);
 
   if (!goal) {
     return (
@@ -19,17 +20,42 @@ export default function GoalDetail({ route, navigation }: any) {
 
   const currentProgress = todayProgress[goalId] || 0;
   const percentage = getProgressPercentage(goalId);
+  const streak = getStreak(goalId);
 
   const handleIncrement = (amount: number) => {
+    const previousPercentage = percentage;
     incrementProgress(goalId, amount);
+    
+    // Check if goal just completed
+    setTimeout(() => {
+      const newPercentage = getProgressPercentage(goalId);
+      if (previousPercentage < 100 && newPercentage >= 100) {
+        setShowCelebration(true);
+        setTimeout(() => setShowCelebration(false), 3000);
+      }
+    }, 100);
   };
 
   const handleSetValue = () => {
     const value = parseFloat(inputValue);
     if (!isNaN(value) && value >= 0) {
+      const previousPercentage = percentage;
       updateProgress(goalId, value);
       setInputValue('');
+      
+      // Check if goal just completed
+      setTimeout(() => {
+        const newPercentage = getProgressPercentage(goalId);
+        if (previousPercentage < 100 && newPercentage >= 100) {
+          setShowCelebration(true);
+          setTimeout(() => setShowCelebration(false), 3000);
+        }
+      }, 100);
     }
+  };
+
+  const handleUndo = () => {
+    undoLastAction();
   };
 
   const getQuickIncrements = () => {
@@ -66,6 +92,22 @@ export default function GoalDetail({ route, navigation }: any) {
       </View>
 
       <View style={styles.content}>
+        {/* Undo Button */}
+        {lastAction && lastAction.goalId === goalId && (
+          <TouchableOpacity style={styles.undoButton} onPress={handleUndo}>
+            <Text style={styles.undoIcon}>↶</Text>
+            <Text style={styles.undoText}>Undo</Text>
+          </TouchableOpacity>
+        )}
+
+        {/* Streak Display */}
+        {streak > 0 && (
+          <View style={styles.streakCard}>
+            <Text style={styles.streakEmoji}>🔥</Text>
+            <Text style={styles.streakText}>{streak} Day Streak!</Text>
+          </View>
+        )}
+
         <View style={styles.iconContainer}>
           <Text style={styles.icon}>{goal.icon}</Text>
         </View>
@@ -100,6 +142,7 @@ export default function GoalDetail({ route, navigation }: any) {
             <TextInput
               style={styles.input}
               placeholder={`Enter ${goal.unit}`}
+              placeholderTextColor="#999"
               keyboardType="numeric"
               value={inputValue}
               onChangeText={setInputValue}
@@ -122,6 +165,24 @@ export default function GoalDetail({ route, navigation }: any) {
           </Text>
         </View>
       </View>
+
+      {/* Celebration Modal */}
+      <Modal
+        visible={showCelebration}
+        transparent
+        animationType="fade"
+      >
+        <View style={styles.celebrationOverlay}>
+          <View style={styles.celebrationCard}>
+            <Text style={styles.celebrationEmoji}>🎉</Text>
+            <Text style={styles.celebrationTitle}>Amazing!</Text>
+            <Text style={styles.celebrationText}>
+              You've completed your {goal.title} goal!
+            </Text>
+            <Text style={styles.celebrationSubtext}>Keep crushing it!</Text>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
@@ -269,6 +330,84 @@ const styles = StyleSheet.create({
   statsText: {
     fontSize: 16,
     color: '#666',
+    textAlign: 'center',
+  },
+  undoButton: {
+    backgroundColor: '#FF9800',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    marginBottom: 15,
+    borderRadius: 15,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  undoIcon: {
+    fontSize: 18,
+    color: '#fff',
+    marginRight: 8,
+  },
+  undoText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#fff',
+  },
+  streakCard: {
+    backgroundColor: '#FFF3E0',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    marginBottom: 15,
+    borderRadius: 15,
+    borderWidth: 2,
+    borderColor: '#FF9800',
+  },
+  streakEmoji: {
+    fontSize: 24,
+    marginRight: 8,
+  },
+  streakText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FF6F00',
+  },
+  celebrationOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  celebrationCard: {
+    backgroundColor: '#fff',
+    borderRadius: 30,
+    padding: 40,
+    alignItems: 'center',
+    width: '80%',
+  },
+  celebrationEmoji: {
+    fontSize: 80,
+    marginBottom: 20,
+  },
+  celebrationTitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 10,
+  },
+  celebrationText: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  celebrationSubtext: {
+    fontSize: 14,
+    color: '#999',
     textAlign: 'center',
   },
 });
