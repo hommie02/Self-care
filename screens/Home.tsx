@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal } from 'rea
 import { useGoals } from '../context/GoalContext';
 import { useAuth } from '../context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Haptics from 'expo-haptics';
 
 const MOOD_STORAGE_KEY = '@daily_mood';
 
@@ -289,6 +290,7 @@ export default function Home({ navigation }: any) {
   };
 
   const handleMoodSelect = (mood: string) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setSelectedMood(mood);
     const response = getMoodResponse(mood);
     setMoodMessage(`${response.message}\n\n💡 ${response.suggestion}`);
@@ -315,6 +317,7 @@ export default function Home({ navigation }: any) {
     setTimeout(() => {
       const newPercentage = getProgressPercentage(goalId);
       if (previousPercentage < 100 && newPercentage >= 100) {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         const goal = goals.find(g => g.id === goalId);
         setCelebrationGoal(goal);
         setShowCelebration(true);
@@ -380,9 +383,6 @@ export default function Home({ navigation }: any) {
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Popular</Text>
-          <TouchableOpacity>
-            <Text style={styles.seeAll}>See All</Text>
-          </TouchableOpacity>
         </View>
         <View style={styles.goalsRow}>
           {popularGoals.slice(0, 2).map(goal => (
@@ -402,9 +402,6 @@ export default function Home({ navigation }: any) {
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>New</Text>
-          <TouchableOpacity>
-            <Text style={styles.seeAll}>See All</Text>
-          </TouchableOpacity>
         </View>
         <View style={styles.goalsRow}>
           {newGoals.slice(0, 2).map(goal => (
@@ -513,7 +510,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   illustration: {
-    fontSize: 60,
+    fontSize: 120,
   },
   greeting: {
     fontSize: 28,

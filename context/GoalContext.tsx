@@ -187,7 +187,7 @@ export const GoalProvider = ({ children }: { children: ReactNode }) => {
     const goal = goals.find(g => g.id === goalId);
     if (!goal) return 0;
     
-    return Math.round((total / (last7Days.length * goal.target)) * 100);
+    return Math.min(Math.round((total / (last7Days.length * goal.target)) * 100), 100);
   };
 
   const getProgressPercentage = (goalId: string) => {

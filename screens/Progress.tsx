@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useGoals } from '../context/GoalContext';
+import * as Haptics from 'expo-haptics';
 
 interface ProgressCardProps {
   goalId: string;
@@ -135,20 +136,30 @@ export default function Progress() {
         <View style={styles.weeklyOverviewCard}>
           <View style={styles.weeklyHeader}>
             <Text style={styles.weeklyTitle}>This Week</Text>
-            <View style={styles.weeklyBadge}>
-              <Text style={styles.weeklyBadgeText}>{overallWeeklyCompletion()}%</Text>
-            </View>
           </View>
           
-          <View style={styles.weekCalendar}>
+          {/* Bar Graph */}
+          <View style={styles.barGraphContainer}>
             {weekDays.map((day, index) => (
-              <DayProgress
-                key={index}
-                day={day.day}
-                date={day.date}
-                isToday={day.isToday}
-                completionRate={day.completionRate}
-              />
+              <View key={index} style={styles.barColumn}>
+                <View style={styles.barWrapper}>
+                  <View 
+                    style={[
+                      styles.bar, 
+                      { 
+                        height: `${Math.min(day.completionRate, 100)}%`,
+                        backgroundColor: day.completionRate >= 75 ? '#4CAF50' : 
+                                       day.completionRate >= 50 ? '#FFC107' : 
+                                       day.completionRate > 0 ? '#FF9800' : '#E0E0E0'
+                      }
+                    ]} 
+                  />
+                </View>
+                <Text style={[styles.barDay, day.isToday && styles.barDayToday]}>
+                  {day.day}
+                </Text>
+                <Text style={styles.barDate}>{day.date}</Text>
+              </View>
             ))}
           </View>
           
@@ -302,16 +313,44 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
   },
-  weeklyBadge: {
-    backgroundColor: '#4CAF50',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 15,
+  barGraphContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    height: 150,
+    marginBottom: 20,
+    paddingHorizontal: 5,
   },
-  weeklyBadgeText: {
-    color: '#fff',
+  barColumn: {
+    flex: 1,
+    alignItems: 'center',
+    marginHorizontal: 3,
+  },
+  barWrapper: {
+    width: '100%',
+    height: 120,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  bar: {
+    width: '80%',
+    borderRadius: 8,
+    minHeight: 4,
+  },
+  barDay: {
+    fontSize: 12,
+    color: '#999',
+    marginTop: 8,
+    fontWeight: '500',
+  },
+  barDayToday: {
+    color: '#E91E63',
     fontWeight: 'bold',
-    fontSize: 14,
+  },
+  barDate: {
+    fontSize: 10,
+    color: '#CCC',
+    marginTop: 2,
   },
   weekCalendar: {
     flexDirection: 'row',
