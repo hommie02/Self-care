@@ -121,10 +121,6 @@ export default function Progress() {
       </View>
 
       <View style={styles.content}>
-        <Text style={styles.title}>
-          Weekly <Text style={styles.titleBold}>Progress</Text>
-        </Text>
-
         {/* Weekly Overview Card */}
         <View style={styles.weeklyOverviewCard}>
           <View style={styles.weeklyHeader}>
