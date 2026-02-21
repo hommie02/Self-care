@@ -23,6 +23,11 @@
         "foregroundImage": "./assets/app-icon.png",
         "backgroundColor": "#B8D8F0"
       },
+      "splash": {
+        "image": "./assets/splash-icon.png",
+        "resizeMode": "cover",
+        "backgroundColor": "#B8D8F0"
+      },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "package": "com.hommie0212.Selfcare",
