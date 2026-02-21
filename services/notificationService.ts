@@ -65,8 +65,10 @@ export const scheduleMorningGreeting = async (userName: string) => {
         hour: 8,
         minute: 0,
         repeats: true,
+        channelId: 'default',
       },
     });
+    console.log('Morning greeting scheduled successfully');
   } catch (error) {
     console.error('Error scheduling morning greeting:', error);
   }
@@ -82,7 +84,7 @@ export const scheduleGoalReminders = async () => {
       }
     }
 
-    // Water reminder - 10 AM
+    // Water reminder - 8 AM
     await Notifications.scheduleNotificationAsync({
       content: {
         title: '💧 Stay Hydrated!',
@@ -90,27 +92,14 @@ export const scheduleGoalReminders = async () => {
         data: { type: 'goal-reminder', goal: 'water' },
       },
       trigger: {
-        hour: 10,
+        hour: 8,
         minute: 0,
         repeats: true,
+        channelId: 'default',
       },
     });
 
-    // Water reminder - 2 PM
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: '💧 Hydration Check!',
-        body: 'Have you had enough water today?',
-        data: { type: 'goal-reminder', goal: 'water' },
-      },
-      trigger: {
-        hour: 14,
-        minute: 0,
-        repeats: true,
-      },
-    });
-
-    // Water reminder - 6 PM
+    // Water reminder - 7 PM
     await Notifications.scheduleNotificationAsync({
       content: {
         title: '💧 Evening Hydration',
@@ -118,13 +107,14 @@ export const scheduleGoalReminders = async () => {
         data: { type: 'goal-reminder', goal: 'water' },
       },
       trigger: {
-        hour: 18,
+        hour: 19,
         minute: 0,
         repeats: true,
+        channelId: 'default',
       },
     });
 
-    // Study reminder - 3 PM
+    // Study reminder - 8 PM
     await Notifications.scheduleNotificationAsync({
       content: {
         title: '📚 Study Time!',
@@ -132,37 +122,25 @@ export const scheduleGoalReminders = async () => {
         data: { type: 'goal-reminder', goal: 'study' },
       },
       trigger: {
-        hour: 15,
+        hour: 20,
         minute: 0,
         repeats: true,
+        channelId: 'default',
       },
     });
 
-    // Running reminder - 6 AM
+    // To-Do List reminder - 9 AM
     await Notifications.scheduleNotificationAsync({
       content: {
-        title: '🏃 Morning Run!',
-        body: 'Perfect time for a morning run. Let\'s go!',
-        data: { type: 'goal-reminder', goal: 'running' },
+        title: '📝 Check Your To-Do List',
+        body: 'Review your tasks for today and stay organized!',
+        data: { type: 'goal-reminder', goal: 'todo' },
       },
       trigger: {
-        hour: 6,
+        hour: 9,
         minute: 0,
         repeats: true,
-      },
-    });
-
-    // Exercise reminder - 5 PM
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: '💪 Exercise Time!',
-        body: 'Time to get moving! Your body will thank you.',
-        data: { type: 'goal-reminder', goal: 'exercise' },
-      },
-      trigger: {
-        hour: 17,
-        minute: 0,
-        repeats: true,
+        channelId: 'default',
       },
     });
 
@@ -177,10 +155,11 @@ export const scheduleGoalReminders = async () => {
         hour: 22,
         minute: 0,
         repeats: true,
+        channelId: 'default',
       },
     });
 
-    // Wake up reminder - 7 AM
+    // Wake up reminder - 6 AM
     await Notifications.scheduleNotificationAsync({
       content: {
         title: '⏰ Good Morning!',
@@ -188,12 +167,14 @@ export const scheduleGoalReminders = async () => {
         data: { type: 'goal-reminder', goal: 'wakeup' },
       },
       trigger: {
-        hour: 7,
+        hour: 6,
         minute: 0,
         repeats: true,
+        channelId: 'default',
       },
     });
 
+    console.log('Goal reminders scheduled successfully');
   } catch (error) {
     console.error('Error scheduling goal reminders:', error);
   }

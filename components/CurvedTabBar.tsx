@@ -48,8 +48,8 @@ export default function CurvedTabBar({ state, descriptors, navigation }: CurvedT
             case 'Progress':
               iconName = 'stats-chart';
               break;
-            case 'MoodChecker':
-              iconName = 'happy';
+            case 'TodoList':
+              iconName = 'checkbox';
               break;
             case 'Settings':
               iconName = 'settings';

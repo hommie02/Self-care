@@ -87,7 +87,7 @@ export default function ForgotPassword({ navigation }: any) {
             <TextInput
               style={styles.input}
               placeholder="Email"
-              placeholderTextColor="#555"
+              placeholderTextColor="#000"
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
@@ -102,7 +102,7 @@ export default function ForgotPassword({ navigation }: any) {
             <TextInput
               style={styles.input}
               placeholder="New Password"
-              placeholderTextColor="#555"
+              placeholderTextColor="#000"
               value={newPassword}
               onChangeText={setNewPassword}
               secureTextEntry
@@ -110,7 +110,7 @@ export default function ForgotPassword({ navigation }: any) {
             <TextInput
               style={styles.input}
               placeholder="Confirm Password"
-              placeholderTextColor="#555"
+              placeholderTextColor="#000"
               value={confirmPassword}
               onChangeText={setConfirmPassword}
               secureTextEntry

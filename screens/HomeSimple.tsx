@@ -39,6 +39,19 @@ export default function Home({ navigation }: any) {
         <Text style={styles.quoteText}>{dailyQuote}</Text>
       </View>
 
+      {/* Study Timetable Button */}
+      <TouchableOpacity 
+        style={styles.timetableButton}
+        onPress={() => navigation.navigate('StudyTimetable')}
+      >
+        <Text style={styles.timetableIcon}>📚</Text>
+        <View style={styles.timetableTextContainer}>
+          <Text style={styles.timetableTitle}>Study Timetable</Text>
+          <Text style={styles.timetableSubtitle}>Organize your study schedule</Text>
+        </View>
+        <Text style={styles.arrow}>→</Text>
+      </TouchableOpacity>
+
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Popular Goals</Text>
         <View style={styles.goalsRow}>
@@ -128,6 +141,41 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontStyle: 'italic',
     color: '#666',
+  },
+  timetableButton: {
+    backgroundColor: '#B8D8F0',
+    borderRadius: 20,
+    padding: 20,
+    marginHorizontal: 20,
+    marginTop: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  timetableIcon: {
+    fontSize: 40,
+    marginRight: 15,
+  },
+  timetableTextContainer: {
+    flex: 1,
+  },
+  timetableTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 3,
+  },
+  timetableSubtitle: {
+    fontSize: 13,
+    color: '#666',
+  },
+  arrow: {
+    fontSize: 24,
+    color: '#333',
   },
   section: {
     padding: 20,

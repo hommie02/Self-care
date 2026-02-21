@@ -14,7 +14,12 @@ export default function Onboarding({ navigation }: OnboardingProps) {
     {
       emoji: '🎯',
       title: 'Set Your Goals',
-      description: 'Choose from popular goals like drinking water, studying, exercising, and more. Track your daily progress easily.',
+      description: 'Choose from popular goals like drinking water and studying. Track your daily progress easily.',
+    },
+    {
+      emoji: '📚',
+      title: 'Study Timetable',
+      description: 'Create your weekly study schedule with up to 7 subjects. Assign multiple subjects per day and see today\'s subjects at a glance.',
     },
     {
       emoji: '📊',

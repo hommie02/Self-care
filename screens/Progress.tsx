@@ -6,7 +6,6 @@ interface ProgressCardProps {
   goalId: string;
   percentage: number;
   title: string;
-  weeklyAverage: number;
 }
 
 interface DayProgressProps {
@@ -37,7 +36,7 @@ const DayProgress = ({ day, date, isToday, completionRate }: DayProgressProps) =
   );
 };
 
-const ProgressCard = ({ goalId, percentage, title, weeklyAverage }: ProgressCardProps) => {
+const ProgressCard = ({ goalId, percentage, title }: ProgressCardProps) => {
   const getColor = () => {
     if (percentage >= 75) return '#E91E63';
     if (percentage >= 50) return '#FF6B9D';
@@ -52,7 +51,7 @@ const ProgressCard = ({ goalId, percentage, title, weeklyAverage }: ProgressCard
         </View>
         <View style={styles.progressInfo}>
           <Text style={styles.progressTitle}>{title}</Text>
-          <Text style={styles.progressSubtitle}>Weekly avg: {weeklyAverage}%</Text>
+          <Text style={styles.progressSubtitle}>Today's Progress</Text>
         </View>
       </View>
       <Text style={styles.arrow}>›</Text>
@@ -61,10 +60,10 @@ const ProgressCard = ({ goalId, percentage, title, weeklyAverage }: ProgressCard
 };
 
 export default function Progress() {
-  const { goals, getProgressPercentage, getWeeklyAverage, weeklyData, todayProgress } = useGoals();
+  const { goals, getProgressPercentage, weeklyData, todayProgress } = useGoals();
 
   const trackedGoals = goals.filter(g => 
-    ['water', 'exercise', 'study', 'running'].includes(g.id)
+    ['water', 'study'].includes(g.id)
   );
 
   // Get last 7 days
@@ -104,15 +103,6 @@ export default function Progress() {
   };
 
   const weekDays = getLast7Days();
-  
-  // Calculate overall weekly completion
-  const overallWeeklyCompletion = () => {
-    let total = 0;
-    trackedGoals.forEach(goal => {
-      total += getWeeklyAverage(goal.id);
-    });
-    return trackedGoals.length > 0 ? Math.round(total / trackedGoals.length) : 0;
-  };
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
@@ -153,11 +143,7 @@ export default function Progress() {
           </View>
           
           <Text style={styles.weeklySubtext}>
-            {overallWeeklyCompletion() >= 75 
-              ? '🎉 Amazing week! Keep it up!' 
-              : overallWeeklyCompletion() >= 50 
-              ? '💪 Good progress! You can do better!' 
-              : '📈 Let\'s improve this week!'}
+            Keep tracking your daily progress!
           </Text>
         </View>
 
@@ -169,7 +155,6 @@ export default function Progress() {
             goalId={goal.id}
             percentage={getProgressPercentage(goal.id)}
             title={goal.title}
-            weeklyAverage={getWeeklyAverage(goal.id)}
           />
         ))}
       </View>

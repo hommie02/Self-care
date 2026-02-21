@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useGoals } from '../context/GoalContext';
 import { useAuth } from '../context/AuthContext';
-
-const MOOD_STORAGE_KEY = '@daily_mood';
 
 const motivationalQuotes = [
   "Every day is a new beginning. Take a deep breath and start again.",
@@ -32,12 +31,10 @@ const motivationalQuotes = [
   "Sometimes we're tested not to show our weaknesses, but to discover our strengths.",
   "The key to success is to focus on goals, not obstacles.",
   "Push yourself, because no one else is going to do it for you.",
-  "Great things never came from comfort zones.",
   "Dream it. Wish it. Do it.",
   "Success is what comes after you stop making excuses.",
   "Do something today that your future self will thank you for.",
   "Little things make big days.",
-  "It's going to be hard, but hard does not mean impossible.",
   "Don't stop until you're proud.",
   "Work hard in silence. Let success make the noise.",
   "The struggle you're in today is developing the strength you need tomorrow.",
@@ -94,7 +91,6 @@ const motivationalQuotes = [
   "80% of success is showing up.",
   "Either you run the day or the day runs you.",
   "We may encounter many defeats but we must not be defeated.",
-  "Whether you think you can or think you can't, you're right.",
   "Security is mostly a superstition. Life is either a daring adventure or nothing.",
   "The only person you are destined to become is the person you decide to be.",
   "Go confidently in the direction of your dreams.",
@@ -109,12 +105,10 @@ const motivationalQuotes = [
   "Believe and act as if it were impossible to fail.",
   "Definiteness of purpose is the starting point of all achievement.",
   "We generate fears while we sit. We overcome them by action.",
-  "Whether you think you can or think you can't, you're right.",
   "I have not failed. I've just found 10,000 ways that won't work.",
   "A person who never made a mistake never tried anything new.",
   "The person who says it cannot be done should not interrupt the person who is doing it.",
   "There are no traffic jams along the extra mile.",
-  "It is never too late to be what you might have been.",
   "You become what you believe.",
   "I would rather die of passion than of boredom.",
   "A truly rich man is one whose children run into his arms when his hands are empty.",
@@ -137,12 +131,9 @@ const motivationalQuotes = [
   "Eighty percent of success is showing up.",
   "Your time is limited, so don't waste it living someone else's life.",
   "Winning isn't everything, but wanting to win is.",
-  "I am not a product of my circumstances. I am a product of my decisions.",
   "Every child is an artist. The problem is how to remain an artist once he grows up.",
   "You can never cross the ocean until you have the courage to lose sight of the shore.",
   "I've learned that people will forget what you said, people will forget what you did, but people will never forget how you made them feel.",
-  "Either you run the day, or the day runs you.",
-  "Whether you think you can or you think you can't, you're right.",
   "The two most important days in your life are the day you are born and the day you find out why.",
   "Whatever you can do, or dream you can, begin it. Boldness has genius, power and magic in it.",
   "The best revenge is massive success.",
@@ -151,8 +142,6 @@ const motivationalQuotes = [
   "If you hear a voice within you say you cannot paint, then by all means paint and that voice will be silenced.",
   "There is only one way to avoid criticism: do nothing, say nothing, and be nothing.",
   "Ask and it will be given to you; search, and you will find; knock and the door will be opened for you.",
-  "The only person you are destined to become is the person you decide to be.",
-  "Believe you can and you're halfway there.",
   "Too many of us are not living our dreams because we are living our fears.",
   "Challenges are what make life interesting and overcoming them is what makes life meaningful.",
   "If you want to lift yourself up, lift up someone else.",
@@ -162,13 +151,74 @@ const motivationalQuotes = [
   "What's money? A man is a success if he gets up in the morning and goes to bed at night and in between does what he wants to do.",
   "I didn't fail the test. I just found 100 ways to do it wrong.",
   "In order to succeed, your desire for success should be greater than your fear of failure.",
-  "A person who never made a mistake never tried anything new.",
-  "The person who says it cannot be done should not interrupt the person who is doing it.",
-  "There are no traffic jams along the extra mile.",
-  "It is never too late to be what you might have been.",
-  "You become what you believe.",
-  "The only impossible journey is the one you never begin.",
   "Start where you are. Use what you have. Do what you can.",
+  "The way to get started is to quit talking and begin doing.",
+  "Don't be pushed around by the fears in your mind. Be led by the dreams in your heart.",
+  "Hardships often prepare ordinary people for an extraordinary destiny.",
+  "Believe in yourself. You are braver than you think, more talented than you know, and capable of more than you imagine.",
+  "I learned that courage was not the absence of fear, but the triumph over it.",
+  "Opportunities don't happen. You create them.",
+  "Try not to become a person of success, but rather try to become a person of value.",
+  "It is not the strongest of the species that survive, nor the most intelligent, but the one most responsive to change.",
+  "The best and most beautiful things in the world cannot be seen or even touched - they must be felt with the heart.",
+  "It is during our darkest moments that we must focus to see the light.",
+  "Whoever is happy will make others happy too.",
+  "Do not go where the path may lead, go instead where there is no path and leave a trail.",
+  "You will face many defeats in life, but never let yourself be defeated.",
+  "In the end, it's not the years in your life that count. It's the life in your years.",
+  "Never let the fear of striking out keep you from playing the game.",
+  "Life is either a daring adventure or nothing at all.",
+  "Many of life's failures are people who did not realize how close they were to success when they gave up.",
+  "You have brains in your head. You have feet in your shoes. You can steer yourself any direction you choose.",
+  "If life were predictable it would cease to be life, and be without flavor.",
+  "The whole secret of a successful life is to find out what is one's destiny to do, and then do it.",
+  "In order to write about life first you must live it.",
+  "The big lesson in life, baby, is never be scared of anyone or anything.",
+  "Sing like no one's listening, love like you've never been hurt, dance like nobody's watching, and live like it's heaven on earth.",
+  "Curiosity about life in all of its aspects, I think, is still the secret of great creative people.",
+  "Life is not a problem to be solved, but a reality to be experienced.",
+  "The unexamined life is not worth living.",
+  "Turn your wounds into wisdom.",
+  "The way I see it, if you want the rainbow, you gotta put up with the rain.",
+  "Do all the good you can, for all the people you can, in all the ways you can, as long as you can.",
+  "Don't settle for what life gives you; make life better and build something.",
+  "Everybody wants to be famous, but nobody wants to do the work.",
+  "You don't always need a plan. Sometimes you just need to breathe, trust, let go and see what happens.",
+  "If I cannot do great things, I can do small things in a great way.",
+  "Don't wait. The time will never be just right.",
+  "With the right kind of coaching and determination you can accomplish anything.",
+  "If you have good thoughts they will shine out of your face like sunbeams and you will always look lovely.",
+  "No matter what people tell you, words and ideas can change the world.",
+  "Each person must live their life as a model for others.",
+  "A champion is defined not by their wins but by how they can recover when they fall.",
+  "You have to be where you are to get where you need to go.",
+  "Accept the challenges so that you can feel the exhilaration of victory.",
+  "If you're offered a seat on a rocket ship, don't ask what seat! Just get on.",
+  "First, have a definite, clear practical ideal; a goal, an objective. Second, have the necessary means to achieve your ends; wisdom, money, materials, and methods. Third, adjust all your means to that end.",
+  "If the wind will not serve, take to the oars.",
+  "You can't fall if you don't climb. But there's no joy in living your whole life on the ground.",
+  "We must believe that we are gifted for something, and that this thing, at whatever cost, must be attained.",
+  "Too many of us are not living our dreams because we are living our fears.",
+  "Keep your face always toward the sunshine, and shadows will fall behind you.",
+  "Success is peace of mind, which is a direct result of self-satisfaction in knowing you made the effort to become the best of which you are capable.",
+  "Success usually comes to those who are too busy to be looking for it.",
+  "The road to success and the road to failure are almost exactly the same.",
+  "Success is getting what you want, happiness is wanting what you get.",
+  "Don't be distracted by criticism. Remember, the only taste of success some people get is to take a bite out of you.",
+  "Success is not how high you have climbed, but how you make a positive difference to the world.",
+  "If you really look closely, most overnight successes took a long time.",
+  "The only limit to our realization of tomorrow will be our doubts of today.",
+  "It is better to fail in originality than to succeed in imitation.",
+  "Successful people do what unsuccessful people are not willing to do. Don't wish it were easier; wish you were better.",
+  "The road to success is dotted with many tempting parking spaces.",
+  "I find that the harder I work, the more luck I seem to have.",
+  "The real test is not whether you avoid this failure, because you won't. It's whether you let it harden or shame you into inaction, or whether you learn from it; whether you choose to persevere.",
+  "You've got to get up every morning with determination if you're going to go to bed with satisfaction.",
+  "I never dreamed about success, I worked for it.",
+  "Success seems to be connected with action. Successful people keep moving. They make mistakes but they don't quit.",
+  "There are no secrets to success. It is the result of preparation, hard work, and learning from failure.",
+  "The only place where success comes before work is in the dictionary.",
+  "Don't aim for success if you want it; just do what you love and believe in, and it will come naturally.",
 ];
 
 interface GoalCardProps {
@@ -185,9 +235,6 @@ const GoalCard = ({ goalId, icon, title, category, onPress, onQuickAdd }: GoalCa
     switch (goalId) {
       case 'water': return 0.5;
       case 'study': return 15;
-      case 'savings': return 500;
-      case 'running': return 10;
-      case 'exercise': return 10;
       default: return 1;
     }
   };
@@ -211,93 +258,17 @@ const GoalCard = ({ goalId, icon, title, category, onPress, onQuickAdd }: GoalCa
 };
 
 export default function Home({ navigation }: any) {
-  const { goals, incrementProgress, getProgressPercentage, getBadges } = useGoals();
+  const { goals, incrementProgress, getProgressPercentage, getBadges, undoLastAction } = useGoals();
   const { user } = useAuth();
   const [dailyQuote, setDailyQuote] = useState('');
   const [showCelebration, setShowCelebration] = useState(false);
   const [celebrationGoal, setCelebrationGoal] = useState<any>(null);
-  const [showMoodPicker, setShowMoodPicker] = useState(false);
-  const [selectedMood, setSelectedMood] = useState<string | null>(null);
-  const [moodMessage, setMoodMessage] = useState('');
-  const [todayMood, setTodayMood] = useState<string | null>(null);
 
   useEffect(() => {
     // Set daily quote based on date
     const today = new Date().getDate();
     setDailyQuote(motivationalQuotes[today % motivationalQuotes.length]);
-    loadTodayMood();
   }, []);
-
-  const loadTodayMood = async () => {
-    try {
-      const today = new Date().toISOString().split('T')[0];
-      const stored = await AsyncStorage.getItem(MOOD_STORAGE_KEY);
-      if (stored) {
-        const moodData = JSON.parse(stored);
-        if (moodData.date === today) {
-          setTodayMood(moodData.mood);
-        }
-      }
-    } catch (error) {
-      console.error('Error loading mood:', error);
-    }
-  };
-
-  const saveMood = async (mood: string) => {
-    try {
-      const today = new Date().toISOString().split('T')[0];
-      await AsyncStorage.setItem(MOOD_STORAGE_KEY, JSON.stringify({ date: today, mood }));
-      setTodayMood(mood);
-    } catch (error) {
-      console.error('Error saving mood:', error);
-    }
-  };
-
-  const getMoodResponse = (mood: string) => {
-    const responses: { [key: string]: { message: string; suggestion: string } } = {
-      '😊': {
-        message: "That's wonderful! Your positive energy is contagious!",
-        suggestion: "Keep this momentum going! Maybe share your happiness with someone today."
-      },
-      '😄': {
-        message: "Amazing! You're radiating joy today!",
-        suggestion: "This is a great day to tackle your goals. You've got the energy!"
-      },
-      '😐': {
-        message: "It's okay to have neutral days. Every day doesn't have to be perfect.",
-        suggestion: "Try doing something small that usually makes you smile. Maybe a short walk or your favorite music?"
-      },
-      '😔': {
-        message: "I'm sorry you're feeling down. Remember, this feeling is temporary.",
-        suggestion: "Be gentle with yourself today. Maybe try some light exercise or talk to someone you trust. You're not alone."
-      },
-      '😢': {
-        message: "It's okay to not be okay. Your feelings are valid.",
-        suggestion: "Take it easy today. Do something comforting - watch something you love, rest, or reach out to a friend. Tomorrow is a new day."
-      },
-      '😴': {
-        message: "Feeling tired? Rest is just as important as being productive.",
-        suggestion: "Listen to your body. Maybe take a short nap, go to bed early tonight, or just take things slower today."
-      },
-      '😤': {
-        message: "Feeling frustrated is normal. Take a deep breath.",
-        suggestion: "Channel that energy into something productive. Exercise can help release tension. Or take a break and come back refreshed."
-      },
-    };
-    return responses[mood] || responses['😐'];
-  };
-
-  const handleMoodSelect = (mood: string) => {
-    setSelectedMood(mood);
-    const response = getMoodResponse(mood);
-    setMoodMessage(`${response.message}\n\n💡 ${response.suggestion}`);
-    saveMood(mood);
-    setTimeout(() => {
-      setShowMoodPicker(false);
-      setSelectedMood(null);
-      setMoodMessage('');
-    }, 5000);
-  };
 
   const popularGoals = goals.filter(g => g.category === 'popular');
   const newGoals = goals.filter(g => g.category === 'new');
@@ -339,22 +310,6 @@ export default function Home({ navigation }: any) {
         <Text style={styles.subtitle}>Start improving your life.</Text>
         <Text style={styles.chooseText}>choose your goals!</Text>
       </View>
-
-      {/* Mood Checker */}
-      <TouchableOpacity 
-        style={styles.moodCard} 
-        onPress={() => setShowMoodPicker(true)}
-      >
-        <Text style={styles.moodIcon}>
-          {todayMood || '😊'}
-        </Text>
-        <View style={styles.moodTextContainer}>
-          <Text style={styles.moodTitle}>How are you feeling?</Text>
-          <Text style={styles.moodSubtitle}>
-            {todayMood ? 'Tap to change your mood' : 'Tap to share your mood'}
-          </Text>
-        </View>
-      </TouchableOpacity>
 
       {/* Motivational Quote */}
       <View style={styles.quoteCard}>
@@ -400,7 +355,21 @@ export default function Home({ navigation }: any) {
           <Text style={styles.sectionTitle}>New</Text>
         </View>
         <View style={styles.goalsRow}>
-          {newGoals.slice(0, 2).map(goal => (
+          {/* To-Do List Card */}
+          <TouchableOpacity 
+            style={styles.goalCard}
+            onPress={() => navigation.navigate('TodoList')}
+          >
+            <View style={styles.iconContainer}>
+              <Text style={styles.icon}>📝</Text>
+            </View>
+            <Text style={styles.goalTitle}>To-Do List</Text>
+            <View style={styles.quickAddButton}>
+              <Text style={styles.quickAddText}>View Tasks</Text>
+            </View>
+          </TouchableOpacity>
+
+          {newGoals.slice(0, 1).map(goal => (
             <GoalCard
               key={goal.id}
               goalId={goal.id}
@@ -413,57 +382,6 @@ export default function Home({ navigation }: any) {
           ))}
         </View>
       </View>
-
-      {/* Mood Picker Modal */}
-      <Modal
-        visible={showMoodPicker}
-        transparent
-        animationType="fade"
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.moodPickerCard}>
-            {selectedMood ? (
-              <>
-                <Text style={styles.selectedMoodEmoji}>{selectedMood}</Text>
-                <Text style={styles.moodResponseText}>{moodMessage}</Text>
-              </>
-            ) : (
-              <>
-                <Text style={styles.moodPickerTitle}>How are you feeling today?</Text>
-                <View style={styles.moodOptions}>
-                  <TouchableOpacity onPress={() => handleMoodSelect('😊')}>
-                    <Text style={styles.moodOption}>😊</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => handleMoodSelect('😄')}>
-                    <Text style={styles.moodOption}>😄</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => handleMoodSelect('😐')}>
-                    <Text style={styles.moodOption}>😐</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => handleMoodSelect('😔')}>
-                    <Text style={styles.moodOption}>😔</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => handleMoodSelect('😢')}>
-                    <Text style={styles.moodOption}>😢</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => handleMoodSelect('😴')}>
-                    <Text style={styles.moodOption}>😴</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => handleMoodSelect('😤')}>
-                    <Text style={styles.moodOption}>😤</Text>
-                  </TouchableOpacity>
-                </View>
-                <TouchableOpacity 
-                  style={styles.cancelButton}
-                  onPress={() => setShowMoodPicker(false)}
-                >
-                  <Text style={styles.cancelButtonText}>Cancel</Text>
-                </TouchableOpacity>
-              </>
-            )}
-          </View>
-        </View>
-      </Modal>
 
       {/* Celebration Modal */}
       <Modal
@@ -674,86 +592,10 @@ const styles = StyleSheet.create({
     color: '#999',
     textAlign: 'center',
   },
-  moodCard: {
-    backgroundColor: '#E8F5E9',
-    borderRadius: 20,
-    padding: 20,
-    marginHorizontal: 20,
-    marginTop: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  moodIcon: {
-    fontSize: 50,
-    marginRight: 15,
-  },
-  moodTextContainer: {
-    flex: 1,
-  },
-  moodTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 5,
-  },
-  moodSubtitle: {
-    fontSize: 13,
-    color: '#666',
-  },
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.7)',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  moodPickerCard: {
-    backgroundColor: '#fff',
-    borderRadius: 30,
-    padding: 30,
-    alignItems: 'center',
-    width: '85%',
-  },
-  moodPickerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 25,
-    textAlign: 'center',
-  },
-  moodOptions: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    gap: 15,
-    marginBottom: 20,
-  },
-  moodOption: {
-    fontSize: 50,
-    padding: 10,
-  },
-  selectedMoodEmoji: {
-    fontSize: 80,
-    marginBottom: 20,
-  },
-  moodResponseText: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-    lineHeight: 24,
-    paddingHorizontal: 10,
-  },
-  cancelButton: {
-    marginTop: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 30,
-  },
-  cancelButtonText: {
-    fontSize: 16,
-    color: '#999',
   },
 });

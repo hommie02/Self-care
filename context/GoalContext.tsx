@@ -38,9 +38,6 @@ const GoalContext = createContext<GoalContextType | undefined>(undefined);
 const defaultGoals: Goal[] = [
   { id: 'water', title: 'Drink Water', icon: '💧', target: 3, unit: 'liters', category: 'popular' },
   { id: 'study', title: 'Study', icon: '📚', target: 60, unit: 'minutes', category: 'popular' },
-  { id: 'savings', title: 'Savings', icon: '💰', target: 5000, unit: 'TSH', category: 'new' },
-  { id: 'running', title: 'Running', icon: '🏃', target: 30, unit: 'minutes', category: 'new' },
-  { id: 'exercise', title: 'Exercise', icon: '💪', target: 30, unit: 'minutes', category: 'new' },
 ];
 
 const STORAGE_KEY = '@goal_data';
@@ -50,27 +47,53 @@ export const GoalProvider = ({ children }: { children: ReactNode }) => {
   const [todayProgress, setTodayProgress] = useState<DailyProgress>({});
   const [weeklyData, setWeeklyData] = useState<WeeklyData>({});
   const [lastAction, setLastAction] = useState<{ goalId: string; previousValue: number } | null>(null);
+  const [userEmail, setUserEmail] = useState<string>('');
 
   const getTodayDate = () => {
     return new Date().toISOString().split('T')[0];
   };
 
   useEffect(() => {
-    loadData();
+    loadUserEmail();
   }, []);
 
   useEffect(() => {
-    saveData();
-  }, [todayProgress, weeklyData]);
+    if (userEmail) {
+      loadData();
+    }
+  }, [userEmail]);
+
+  useEffect(() => {
+    if (userEmail) {
+      saveData();
+    }
+  }, [todayProgress, weeklyData, userEmail]);
+
+  const loadUserEmail = async () => {
+    try {
+      const stored = await AsyncStorage.getItem('@user_data');
+      if (stored) {
+        const userData = JSON.parse(stored);
+        setUserEmail(userData.email || '');
+      }
+    } catch (error) {
+      console.error('Error loading user email:', error);
+    }
+  };
 
   const loadData = async () => {
     try {
-      const stored = await AsyncStorage.getItem(STORAGE_KEY);
+      const storageKey = `${STORAGE_KEY}_${userEmail}`;
+      const stored = await AsyncStorage.getItem(storageKey);
       if (stored) {
         const data = JSON.parse(stored);
         setWeeklyData(data.weeklyData || {});
         const today = getTodayDate();
         setTodayProgress(data.weeklyData?.[today] || {});
+      } else {
+        // New user - reset data
+        setWeeklyData({});
+        setTodayProgress({});
       }
     } catch (error) {
       console.error('Error loading data:', error);
@@ -81,7 +104,8 @@ export const GoalProvider = ({ children }: { children: ReactNode }) => {
     try {
       const today = getTodayDate();
       const updatedWeeklyData = { ...weeklyData, [today]: todayProgress };
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify({ weeklyData: updatedWeeklyData }));
+      const storageKey = `${STORAGE_KEY}_${userEmail}`;
+      await AsyncStorage.setItem(storageKey, JSON.stringify({ weeklyData: updatedWeeklyData }));
     } catch (error) {
       console.error('Error saving data:', error);
     }

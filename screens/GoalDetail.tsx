@@ -62,18 +62,8 @@ export default function GoalDetail({ route, navigation }: any) {
     switch (goalId) {
       case 'water':
         return [0.5, 1, 1.5];
-      case 'sleep':
-        return [1, 2, 4];
-      case 'steps':
-        return [1000, 2500, 5000];
-      case 'exercise':
-        return [10, 15, 30];
-      case 'running':
-        return [10, 20, 30];
       case 'study':
         return [15, 30, 60];
-      case 'savings':
-        return [500, 1000, 2000];
       default:
         return [1, 5, 10];
     }
