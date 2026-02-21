@@ -32,23 +32,6 @@ function MainTabs() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: { display: 'none' },
-        animationEnabled: true,
-        gestureEnabled: true,
-        gestureDirection: 'horizontal',
-        transitionSpec: {
-          open: {
-            animation: 'timing',
-            config: {
-              duration: 400,
-            },
-          },
-          close: {
-            animation: 'timing',
-            config: {
-              duration: 400,
-            },
-          },
-        },
       }}
     >
       <Tab.Screen name="Home" component={Home} />
