@@ -20,12 +20,8 @@ export default function Home({ navigation }: any) {
 
   const dailyQuote = quotes[new Date().getDate() % quotes.length];
 
-  const handleQuickAdd = (goalId: string, amount: number) => {
-    try {
-      incrementProgress(goalId, amount);
-    } catch (error) {
-      console.error('Error adding progress:', error);
-    }
+  const handleGoalPress = (goalId: string) => {
+    navigation.navigate('GoalDetail', { goalId });
   };
 
   return (
@@ -47,18 +43,16 @@ export default function Home({ navigation }: any) {
         <Text style={styles.sectionTitle}>Popular Goals</Text>
         <View style={styles.goalsRow}>
           {popularGoals.slice(0, 2).map(goal => (
-            <View key={goal.id} style={styles.goalCard}>
+            <TouchableOpacity 
+              key={goal.id} 
+              style={styles.goalCard}
+              onPress={() => handleGoalPress(goal.id)}
+            >
               <View style={styles.iconContainer}>
                 <Text style={styles.icon}>{goal.icon}</Text>
               </View>
               <Text style={styles.goalTitle}>{goal.title}</Text>
-              <TouchableOpacity 
-                style={styles.quickAddButton}
-                onPress={() => handleQuickAdd(goal.id, goal.id === 'water' ? 0.5 : 15)}
-              >
-                <Text style={styles.quickAddText}>+ Add</Text>
-              </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
           ))}
         </View>
       </View>
@@ -67,18 +61,16 @@ export default function Home({ navigation }: any) {
         <Text style={styles.sectionTitle}>New Goals</Text>
         <View style={styles.goalsRow}>
           {newGoals.slice(0, 2).map(goal => (
-            <View key={goal.id} style={styles.goalCard}>
+            <TouchableOpacity 
+              key={goal.id} 
+              style={styles.goalCard}
+              onPress={() => handleGoalPress(goal.id)}
+            >
               <View style={styles.iconContainer}>
                 <Text style={styles.icon}>{goal.icon}</Text>
               </View>
               <Text style={styles.goalTitle}>{goal.title}</Text>
-              <TouchableOpacity 
-                style={styles.quickAddButton}
-                onPress={() => handleQuickAdd(goal.id, 10)}
-              >
-                <Text style={styles.quickAddText}>+ Add</Text>
-              </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
           ))}
         </View>
       </View>
@@ -159,6 +151,11 @@ const styles = StyleSheet.create({
     padding: 15,
     width: '48%',
     alignItems: 'center',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   iconContainer: {
     width: 50,
@@ -177,17 +174,5 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#333',
     textAlign: 'center',
-    marginBottom: 10,
-  },
-  quickAddButton: {
-    backgroundColor: '#B8D8F0',
-    paddingVertical: 8,
-    paddingHorizontal: 15,
-    borderRadius: 10,
-  },
-  quickAddText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#333',
   },
 });
