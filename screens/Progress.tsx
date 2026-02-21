@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useGoals } from '../context/GoalContext';
-import * as Haptics from 'expo-haptics';
 
 interface ProgressCardProps {
   goalId: string;

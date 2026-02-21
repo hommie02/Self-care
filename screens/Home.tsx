@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal } from 'rea
 import { useGoals } from '../context/GoalContext';
 import { useAuth } from '../context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Haptics from 'expo-haptics';
 
 const MOOD_STORAGE_KEY = '@daily_mood';
 
@@ -290,7 +289,6 @@ export default function Home({ navigation }: any) {
   };
 
   const handleMoodSelect = (mood: string) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setSelectedMood(mood);
     const response = getMoodResponse(mood);
     setMoodMessage(`${response.message}\n\n💡 ${response.suggestion}`);
@@ -317,7 +315,6 @@ export default function Home({ navigation }: any) {
     setTimeout(() => {
       const newPercentage = getProgressPercentage(goalId);
       if (previousPercentage < 100 && newPercentage >= 100) {
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         const goal = goals.find(g => g.id === goalId);
         setCelebrationGoal(goal);
         setShowCelebration(true);
