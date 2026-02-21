@@ -209,7 +209,18 @@ export const scheduleWeeklySummary = async () => {
       }
     }
 
-    // Weekly summary - Every Sunday at 8 PM
+    // Weekly summary - Every 7 days at 8 PM
+    // Calculate next Sunday at 8 PM
+    const now = new Date();
+    const nextSunday = new Date(now);
+    nextSunday.setDate(now.getDate() + ((7 - now.getDay()) % 7));
+    nextSunday.setHours(20, 0, 0, 0);
+    
+    // If it's already past 8 PM on Sunday, schedule for next Sunday
+    if (nextSunday <= now) {
+      nextSunday.setDate(nextSunday.getDate() + 7);
+    }
+
     await Notifications.scheduleNotificationAsync({
       content: {
         title: '📊 Weekly Summary',
@@ -217,9 +228,7 @@ export const scheduleWeeklySummary = async () => {
         data: { type: 'weekly-summary' },
       },
       trigger: {
-        weekday: 1, // Sunday (1 = Sunday, 2 = Monday, etc.)
-        hour: 20,
-        minute: 0,
+        seconds: Math.floor((nextSunday.getTime() - now.getTime()) / 1000),
         repeats: true,
       },
     });
