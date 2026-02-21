@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
   },
   scrollContent: {
-    paddingBottom: 120,
+    paddingBottom: 150,
   },
   header: {
     paddingHorizontal: 20,
