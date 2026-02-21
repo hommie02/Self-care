@@ -8,12 +8,13 @@ import { View, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { GoalProvider } from './context/GoalContext';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import Welcome from './screens/Welcome';
 import SignUp from './screens/SignUp';
 import Login from './screens/Login';
 import ForgotPassword from './screens/ForgotPassword';
 import Onboarding from './screens/Onboarding';
-import Home from './screens/Home';
+import Home from './screens/HomeSimple';
 import Settings from './screens/Settings';
 import Progress from './screens/Progress';
 import MoodChecker from './screens/MoodChecker';
@@ -131,15 +132,17 @@ function AppNavigator() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <GoalProvider>
-        <SafeAreaProvider>
-          <NavigationContainer>
-            <StatusBar style="dark" backgroundColor="#B8D8F0" />
-            <AppNavigator />
-          </NavigationContainer>
-        </SafeAreaProvider>
-      </GoalProvider>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <GoalProvider>
+          <SafeAreaProvider>
+            <NavigationContainer>
+              <StatusBar style="dark" backgroundColor="#B8D8F0" />
+              <AppNavigator />
+            </NavigationContainer>
+          </SafeAreaProvider>
+        </GoalProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
