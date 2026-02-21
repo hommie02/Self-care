@@ -8,7 +8,6 @@ import { View, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { GoalProvider } from './context/GoalContext';
-import { ErrorBoundary } from './components/ErrorBoundary';
 import Welcome from './screens/Welcome';
 import SignUp from './screens/SignUp';
 import Login from './screens/Login';
@@ -132,17 +131,15 @@ function AppNavigator() {
 
 export default function App() {
   return (
-    <ErrorBoundary>
-      <AuthProvider>
-        <GoalProvider>
-          <SafeAreaProvider>
-            <NavigationContainer>
-              <StatusBar style="dark" backgroundColor="#B8D8F0" />
-              <AppNavigator />
-            </NavigationContainer>
-          </SafeAreaProvider>
-        </GoalProvider>
-      </AuthProvider>
-    </ErrorBoundary>
+    <AuthProvider>
+      <GoalProvider>
+        <SafeAreaProvider>
+          <NavigationContainer>
+            <StatusBar style="dark" backgroundColor="#B8D8F0" />
+            <AppNavigator />
+          </NavigationContainer>
+        </SafeAreaProvider>
+      </GoalProvider>
+    </AuthProvider>
   );
 }
