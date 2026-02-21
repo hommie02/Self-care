@@ -117,13 +117,7 @@ export default function Progress() {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton}>
-          <Text style={styles.backIcon}>‹</Text>
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>How do you feel today?</Text>
-        <TouchableOpacity style={styles.nextButton}>
-          <Text style={styles.nextIcon}>›</Text>
-        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Weekly Progress</Text>
       </View>
 
       <View style={styles.content}>
@@ -196,36 +190,15 @@ const styles = StyleSheet.create({
     paddingBottom: 120,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     paddingHorizontal: 20,
     paddingTop: 60,
     paddingBottom: 20,
     backgroundColor: '#fff',
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
     alignItems: 'center',
-  },
-  backIcon: {
-    fontSize: 30,
-    color: '#333',
   },
   headerTitle: {
-    fontSize: 16,
-    color: '#999',
-  },
-  nextButton: {
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  nextIcon: {
-    fontSize: 30,
+    fontSize: 24,
+    fontWeight: 'bold',
     color: '#333',
   },
   content: {
