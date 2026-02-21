@@ -201,38 +201,8 @@ export const scheduleGoalReminders = async () => {
 
 export const scheduleWeeklySummary = async () => {
   try {
-    // Cancel existing weekly summary
-    const existingNotifications = await Notifications.getAllScheduledNotificationsAsync();
-    for (const notification of existingNotifications) {
-      if (notification.content.data?.type === 'weekly-summary') {
-        await Notifications.cancelScheduledNotificationAsync(notification.identifier);
-      }
-    }
-
-    // Weekly summary - Every 7 days at 8 PM
-    // Calculate next Sunday at 8 PM
-    const now = new Date();
-    const nextSunday = new Date(now);
-    nextSunday.setDate(now.getDate() + ((7 - now.getDay()) % 7));
-    nextSunday.setHours(20, 0, 0, 0);
-    
-    // If it's already past 8 PM on Sunday, schedule for next Sunday
-    if (nextSunday <= now) {
-      nextSunday.setDate(nextSunday.getDate() + 7);
-    }
-
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: '📊 Weekly Summary',
-        body: 'Check out your progress this week! See how you did and plan for next week.',
-        data: { type: 'weekly-summary' },
-      },
-      trigger: {
-        seconds: Math.floor((nextSunday.getTime() - now.getTime()) / 1000),
-        repeats: true,
-      },
-    });
-
+    // Weekly summary disabled for now due to trigger compatibility issues
+    console.log('Weekly summary notifications are currently disabled');
   } catch (error) {
     console.error('Error scheduling weekly summary:', error);
   }
